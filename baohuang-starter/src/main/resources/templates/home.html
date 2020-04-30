@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <title>welcome</title>
+</head>
+<body>
+    <div th:replace="fragments/header::header"></div>
+    <div id="connect-box">
+        <label for="name">input your name</label><input type="text" id="name"/>
+        <button id="connect" onclick="connect();">Connect</button>
+        <button id="disconnect" disabled="disabled" onclick="disconnect();">Disconnect</button>
+    </div>
+    <div id="message-box">
+        <label for="to-message">Say</label><input type="text" id="to-message"/>
+        <button id="send-message" onclick="sendMessage();">Send</button>
+        <label for="message-area">Messages:</label><br/>
+        <textarea id="message-area" rows="10"></textarea>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="http://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
+    <script th:src="@{/js/ws.js}"></script>
+
+</body>
+</html>
