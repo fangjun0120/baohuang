@@ -1,14 +1,9 @@
-var stompClient = null;
-
-function connect() {
+function wsConnect() {
     stompClient = Stomp.client("ws://localhost:8080/endpoint/ws");
 
-    var headers = {"name": $("#name").val()}
-
     // headers, connectCallback, errorCallback
-    stompClient.connect(headers, function() {
-        console.log("connect callback");
-        subscribe('/topic/player', function(response) {
+    stompClient.connect({}, function() {
+        wsSubscribe('/topic/player/' + roomId, function(response) {
             console.log("received message " + response);
             showResponse(response.body);
         }, {});
@@ -17,7 +12,7 @@ function connect() {
     });
 }
 
-function disconnect() {
+function wsDisconnect() {
     if (stompClient != null) {
         stompClient.disconnect();
     }
@@ -31,17 +26,21 @@ function send(url, headers, message) {
     stompClient.send(url, headers, message);
 }
 
-function subscribe(topic, callback, headers) {
+function wsSubscribe(topic, callback, headers) {
     return stompClient.subscribe(topic, callback, headers);
 }
 
-function sendMessage() {
-    var message = $('#to-message').val();
-    send("/app/chat", {}, message);
+function wsSendMessage() {
+    let message = $('#to-message').val();
+    send("/app/chat/" + roomId, {}, message);
+}
+
+function wsSendSystemMessage(message) {
+    send("/app/system/" + roomId, {}, message);
 }
 
 function showResponse(message) {
-    var area = $("#message-area");
+    let area = $("#message-area");
     if (area.val() == null || area.val().length === 0) {
         area.val(message);
     } else {

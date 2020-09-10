@@ -4,6 +4,7 @@ import lombok.Getter;
 
 /**
  * 玩家的状态
+ * 0. 等待开始
  * 1. 等待其他玩家出牌
  * 2. 玩家出牌中
  * 3. 玩家出完了牌
@@ -14,6 +15,7 @@ import lombok.Getter;
  */
 public enum PlayerStatus {
 
+    INIT(0),
     WAITING(1),
     PLAYING(2),
     COMPLETED(3),

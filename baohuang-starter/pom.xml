@@ -14,8 +14,11 @@
     <dependencies>
         <dependency>
             <groupId>jfang.games</groupId>
-            <artifactId>baohuang-service</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <artifactId>baohuang-domain</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jfang.games</groupId>
+            <artifactId>baohuang-repository</artifactId>
         </dependency>
 
         <dependency>
@@ -33,6 +36,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
         <dependency>

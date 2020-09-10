@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: baohuang-game
   datasource:
     url: jdbc:mysql://localhost:3306/baohuang?serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.jdbc.Driver
@@ -11,6 +13,3 @@ spring:
     encoding: UTF-8
   resources:
     static-locations: classpath:/static/
-logging:
-  level:
-    org.springframework.web: DEBUG

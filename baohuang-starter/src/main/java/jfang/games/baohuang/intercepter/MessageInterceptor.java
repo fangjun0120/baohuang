@@ -25,6 +25,7 @@ public class MessageInterceptor implements ChannelInterceptor {
 
     @Override
     public boolean preReceive(MessageChannel channel) {
+        log.info("on received");
         return true;
     }
 

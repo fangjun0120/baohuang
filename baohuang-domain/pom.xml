@@ -11,5 +11,15 @@
 
     <artifactId>baohuang-domain</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>jfang.games</groupId>
+            <artifactId>baohuang-common</artifactId>
+        </dependency>
 
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+    </dependencies>
 </project>

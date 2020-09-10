@@ -1,5 +1,6 @@
 package jfang.games.baohuang.domain.card;
 
+import jfang.games.baohuang.common.message.CardInfo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,6 +33,11 @@ public class Card {
     private boolean blackJoker;
 
     /**
+     * 保镖牌
+     */
+    private boolean isAgentCard;
+
+    /**
      * 花色
      */
     private Suit suit;
@@ -61,6 +67,39 @@ public class Card {
         }
     }
 
+    public CardInfo toCardInfo() {
+        if (this.isRedJoker()) {
+            return new CardInfo(Suit.HEART.getKey(), "O");
+        }
+        if (this.isBlackJoker()) {
+            return new CardInfo(Suit.SPADE.getKey(), "O");
+        }
+        CardInfo cardInfo = new CardInfo();
+        cardInfo.setSuit(this.suit.getKey());
+        cardInfo.setRank(this.rank.getKey());
+        if (this.isAgentCard) {
+            cardInfo.setAgent(true);
+        }
+        return cardInfo;
+    }
+
+    public static Card of(CardInfo cardInfo) {
+        if ("O".equals(cardInfo.getRank())) {
+            if (Suit.HEART.getKey().equals(cardInfo.getSuit())) {
+                return Card.RED_JOKER;
+            } else {
+                return Card.BLACK_JOKER;
+            }
+        }
+        Suit suit = Suit.of(cardInfo.getSuit());
+        Rank rank = Rank.of(cardInfo.getRank());
+        Card card = new Card(suit, rank);
+        if (cardInfo.isAgent()) {
+            card.setAgentCard(true);
+        }
+        return card;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -72,13 +111,14 @@ public class Card {
         Card card = (Card) o;
         return redJoker == card.redJoker &&
                 blackJoker == card.blackJoker &&
+                isAgentCard == card.isAgentCard &&
                 suit == card.suit &&
                 rank == card.rank;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(redJoker, blackJoker, suit, rank);
+        return Objects.hash(redJoker, blackJoker, isAgentCard, suit, rank);
     }
 
     @Override
@@ -92,13 +132,18 @@ public class Card {
     }
 
     /**
-     * 默认红桃 > 黑桃 > 方块 > 梅花
+     * 默认保镖牌最大
+     * 花色排序：红桃 > 黑桃 > 方块 > 梅花
      */
     private static class SuitSensitiveComparator implements Comparator<Card> {
 
         @Override
         public int compare(Card o1, Card o2) {
-            if (o1.isRedJoker()) {
+            if (o1.isAgentCard()) {
+                return 1;
+            } else if (o2.isAgentCard()) {
+                return -1;
+            } else if (o1.isRedJoker()) {
                 if (o2.isRedJoker()) {
                     return 0;
                 } else {

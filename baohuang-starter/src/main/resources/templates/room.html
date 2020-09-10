@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" th:href="@{/css/bootstrap-4.3.1.min.css}">
+    <!-- https://tairraos.github.io/Poker.JS/#chinese-version-readme -->
+    <title>welcome</title>
+</head>
+<body>
+    <div class="container-fluid">
+        <div id="canvas">
+            <canvas id="my-canvas"></canvas>
+        </div>
+        <div id="status" class="row">
+            <div id="rank" class="col-9">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">A</th>
+                            <th scope="col">B</th>
+                            <th scope="col">C</th>
+                            <th scope="col">D</th>
+                            <th scope="col">E</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>-1</td>
+                            <td>-1</td>
+                            <td>-1</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="chat" class="col-3">
+                <label for="message-area">Messages:</label>
+                <br/>
+                <textarea id="message-area" rows="10"></textarea>
+                <br/>
+                <label for="to-message">Say</label><input type="text" id="to-message"/>
+                <button id="send-message" onclick="wsSendMessage();">Send</button>
+            </div>
+        </div>
+    </div>
+    <div>
+        <input id="roomId" type="hidden" th:value="${roomId}" />
+    </div>
+
+    <script th:src="@{/js/jquery-3.3.1.slim.min.js}"></script>
+    <script th:src="@{/js/popper-1.14.7.min.js}"></script>
+    <script th:src="@{/js/bootstrap-4.3.1.min.js}"></script>
+    <script th:src="@{/js/stomp-2.3.3.min.js}"></script>
+    <script th:src="@{/js/ws.js}"></script>
+
+    <script th:src='@{/js/poker.min.js}'></script>
+    <script th:src='@{/js/matrix.js}'></script>
+    <script th:src='@{/js/draw.js}'></script>
+    <script th:src='@{/js/event.js}'></script>
+    <script>
+        let canvas;
+        let context;
+        let cardList = [];
+        let selected = new Set();
+        let mainCardDelta;
+        let mainCardXOffset;
+        let stompClient;
+        let roomId;
+
+        window.onload = function() {
+            roomId = $("#roomId").val();
+            canvas = document.getElementById('my-canvas');
+            canvas.width = $("#canvas").width();
+            canvas.height = document.documentElement.clientHeight;
+            context = canvas.getContext('2d')
+            canvas.addEventListener('click', function(event) {
+                onClick(event);
+            }, false);
+            wsConnect();
+
+            // test
+            // for (let i = 0; i < 29; i++) {
+            //     let card = {
+            //         suit: "hearts",
+            //         rank: "6"
+            //     }
+            //     cardList.push(card);
+            // }
+            // let subList = []
+            // for (let i = 0; i < 5; i++) {
+            //     let card = {
+            //         suit: "hearts",
+            //         rank: "7"
+            //     }
+            //     subList.push(card);
+            // }
+            // drawCards(getDeckRegion(), cardList, selected, "mid");
+            // drawPortrait(getMainPortraitRegion(), "../static/images/portrait0.jpg", "大哥的大");
+            // drawCards(getMainCardRegion(), subList, null, "mid")
+            // drawPortrait(getTopLeftPortraitRegion(), "../static/images/portrait0.jpg", "大哥的大");
+            // drawCardBack(getTopLeftDeckRegion());
+            // drawCards(getTopLeftCardRegion(), subList, null, "left")
+            // drawPortrait(getTopRightPortraitRegion(), "../static/images/portrait0.jpg", "大哥的大");
+            // drawCardBack(getTopRightDeckRegion());
+            // drawCards(getTopRightCardRegion(), subList, null, "right")
+            // drawPortrait(getButtonLeftPortraitRegion(), "../static/images/portrait0.jpg", "大哥的大");
+            // drawCardBack(getButtonLeftDeckRegion());
+            // drawCards(getButtonLeftCardRegion(), subList, null, "left")
+            // drawPortrait(getButtonRightPortraitRegion(), "../static/images/portrait0.jpg", "大哥的大");
+            // drawCardBack(getButtonRightDeckRegion());
+            // drawCards(getButtonRightCardRegion(), subList, null, "right")
+            // drawButton()
+        }
+    </script>
+</body>
+</html>

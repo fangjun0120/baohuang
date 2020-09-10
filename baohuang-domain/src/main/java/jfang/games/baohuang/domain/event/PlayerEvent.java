@@ -1,6 +1,6 @@
 package jfang.games.baohuang.domain.event;
 
-import jfang.games.baohuang.domain.card.Player;
+import jfang.games.baohuang.domain.entity.Player;
 
 /**
  * @author Jun
@@ -17,6 +17,5 @@ public abstract class PlayerEvent {
      * 目标玩家，广播的时候为null
      */
     protected Player target;
-
 
 }

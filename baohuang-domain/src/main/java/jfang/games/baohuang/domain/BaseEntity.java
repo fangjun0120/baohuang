@@ -13,5 +13,5 @@ public abstract class BaseEntity implements Serializable {
 
     @Getter
     @Setter
-    private Long id;
+    protected Long id;
 }
