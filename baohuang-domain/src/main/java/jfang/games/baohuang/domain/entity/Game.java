@@ -61,12 +61,12 @@ public class Game extends BaseEntity {
     /**
      * 是否主公1打4
      */
-    private boolean isKingSingleGame;
+    private boolean isKingOverFour;
 
     /**
      * 是否主公明1打4
      */
-    private boolean isKingSingleGamePublic;
+    private boolean isKingOverFourPublic;
 
     public Game() {
     }
@@ -75,11 +75,13 @@ public class Game extends BaseEntity {
         this.players = players;
     }
 
-    public void setPlayerStatus(int index, PlayerStatus status) {
-        this.players.get(index).setStatus(status);
+    public Player getPlayerByUserId(Long userId) {
+        return this.players.stream()
+                .filter(p -> p.getUserId().equals(userId))
+                .findFirst().orElseThrow(RuntimeException::new);
     }
 
-    public void nextPlayer() {
+    public Integer nextPlayer() {
         int index = this.currentPlayer + 1;
         while (index != this.currentPlayer) {
             if (index > 4) {
@@ -92,6 +94,7 @@ public class Game extends BaseEntity {
             }
             index++;
         }
+        return index;
     }
 
     public void updatePlayerInfo() {
@@ -104,6 +107,7 @@ public class Game extends BaseEntity {
         Player player = this.getPlayers().get(index);
         MessageDTO messageDTO = new MessageDTO("server");
         messageDTO.setStage(this.gameStage.getValue());
+        messageDTO.setCurrentPlayer(this.currentPlayer);
         messageDTO.setPlayerInfo(players.stream()
                 .map(p -> p.toPlayerInfo(p.getIndex() == index))
                 .collect(Collectors.toList()));

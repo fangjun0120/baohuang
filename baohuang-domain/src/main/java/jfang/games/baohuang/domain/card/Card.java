@@ -57,6 +57,10 @@ public class Card {
         this.blackJoker = isBlackJoker;
     }
 
+    public boolean isJoker() {
+        return isRedJoker() || isBlackJoker();
+    }
+
     public String toDisplayString() {
         if (isRedJoker()) {
             return "RJ";
@@ -94,7 +98,7 @@ public class Card {
         Suit suit = Suit.of(cardInfo.getSuit());
         Rank rank = Rank.of(cardInfo.getRank());
         Card card = new Card(suit, rank);
-        if (cardInfo.isAgent()) {
+        if (cardInfo.getAgent()) {
             card.setAgentCard(true);
         }
         return card;

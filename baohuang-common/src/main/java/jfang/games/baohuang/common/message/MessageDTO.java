@@ -23,7 +23,13 @@ public class MessageDTO implements Serializable {
      */
     private Integer stage;
 
-    private Integer index;
+    private CardInfo agentCard;
+
+    private Boolean isOneOverFour;
+
+    private Boolean isRevolution;
+
+    private Integer currentPlayer;
 
     /**
      * player info update
@@ -33,7 +39,14 @@ public class MessageDTO implements Serializable {
     /**
      * report from player
      */
+    private PlayerCallback playerCallback;
+
+    /**
+     * options for player
+     */
     private PlayerAction playerAction;
+
+    private PlayerActionResponse playerActionResponse;
 
     public MessageDTO() {
     }

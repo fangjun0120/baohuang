@@ -6,9 +6,8 @@ import lombok.Data;
  * @author jfang
  */
 @Data
-public class PlayerAction {
+public class PlayerActionResponse {
 
-    private String message;
-    private Object data;
     private Integer value;
+    private Boolean response;
 }

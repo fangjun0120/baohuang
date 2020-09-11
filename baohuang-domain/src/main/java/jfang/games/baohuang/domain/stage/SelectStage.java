@@ -1,11 +1,15 @@
 package jfang.games.baohuang.domain.stage;
 
-import jfang.games.baohuang.common.message.CardInfo;
 import jfang.games.baohuang.common.message.MessageDTO;
 import jfang.games.baohuang.domain.card.Card;
 import jfang.games.baohuang.domain.card.GameStageEnum;
 import jfang.games.baohuang.domain.card.PlayerStatus;
 import jfang.games.baohuang.domain.entity.Game;
+import jfang.games.baohuang.domain.entity.Player;
+import org.springframework.util.CollectionUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 选主公
@@ -14,30 +18,60 @@ import jfang.games.baohuang.domain.entity.Game;
  */
 public class SelectStage implements GameStage {
 
+    private final List<Card> donationCards = new ArrayList<>();
+
     @Override
     public void run(Game game) {
-        // wait for player action
+        Player current = game.getPlayers().get(game.getCurrentPlayer());
+        current.setStatus(PlayerStatus.PLAYING);
+        game.updatePlayerInfo(game.getCurrentPlayer());
     }
 
     @Override
     public void onPlayerMessage(Game game, MessageDTO messageDTO) {
-        if (messageDTO.getPlayerAction().getPass()) {
-            game.setPlayerStatus(game.getCurrentPlayer(), PlayerStatus.WAITING);
-            game.nextPlayer();
-            game.setPlayerStatus(game.getCurrentPlayer(), PlayerStatus.PLAYING);
-            game.updatePlayerInfo(game.getCurrentPlayer());
+        Long userId = messageDTO.getPlayerCallback().getUserId();
+        Player player = game.getPlayerByUserId(userId);
+        if (player.getPlayerCards().canBeKing()) {
+            Card card = Card.of(messageDTO.getPlayerCallback().getSelectedCards().get(0));
+            game.setAgentCard(card);
+            // find agent
+            if (player.getPlayerCards().countSameCard(card) == 4) {
+                game.setKingOverFour(true);
+                player.getPlayerCards().getCard(card).setAgentCard(true);
+            } else {
+                for (Player p: game.getPlayers()) {
+                    Card c = p.getPlayerCards().getCard(card);
+                    if (c != null) {
+                        game.setAgent(player.getIndex());
+                        c.setAgentCard(true);
+                        break;
+                    }
+                }
+            }
+            player.getPlayerCards().addCards(donationCards);
+            nextStage(game);
         } else {
-            // TODO: 校验
-            CardInfo cardInfo = messageDTO.getPlayerAction().getAgentCard();
-            game.setAgentCard(Card.of(cardInfo));
-            game.setKing(game.getCurrentPlayer());
-            // TODO: look for agent
-
+            if (!CollectionUtils.isEmpty(messageDTO.getPlayerCallback().getSelectedCards())) {
+                Card card = Card.of(messageDTO.getPlayerCallback().getSelectedCards().get(0));
+                donationCards.add(card);
+                player.getPlayerCards().popCard(card);
+            }
+            player.setStatus(PlayerStatus.WAITING);
+            int index = game.nextPlayer();
+            game.setCurrentPlayer(index);
+            game.getPlayers().get(index).setStatus(PlayerStatus.PLAYING);
+            game.updatePlayerInfo();
         }
+    }
+
+    private void nextStage(Game game) {
+        game.updatePlayerInfo();
+        game.setGameStage(new SelectStage());
+        game.getGameStage().run(game);
     }
 
     @Override
     public int getValue() {
-        return GameStageEnum.SELECT.getValue();
+        return GameStageEnum.SELECT_KING.getValue();
     }
 }

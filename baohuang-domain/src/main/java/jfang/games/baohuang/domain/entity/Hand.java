@@ -1,6 +1,7 @@
 package jfang.games.baohuang.domain.entity;
 
 import com.google.common.base.Preconditions;
+import jfang.games.baohuang.common.message.CardInfo;
 import jfang.games.baohuang.domain.card.Card;
 import lombok.Getter;
 
@@ -23,8 +24,12 @@ public class Hand {
         this.cards = cards;
     }
 
+    public static Hand of(List<CardInfo> cardInfoList) {
+        return new Hand(cardInfoList.stream().map(Card::of).collect(Collectors.toList()));
+    }
+
     public String toDisplayString() {
-        return cards.stream().sorted(Card.SUIT_SENSITIVE_COMPARATOR).map(Card::toDisplayString).collect(Collectors.joining(" "));
+        return cards.stream().map(Card::toDisplayString).collect(Collectors.joining(" "));
     }
 
     @Override

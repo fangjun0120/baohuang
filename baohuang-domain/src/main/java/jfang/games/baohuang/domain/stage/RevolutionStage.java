@@ -5,12 +5,15 @@ import jfang.games.baohuang.domain.card.GameStageEnum;
 import jfang.games.baohuang.domain.entity.Game;
 
 /**
+ * 是否明牌一打四，是否起义
+ *
  * @author jfang
  */
 public class RevolutionStage implements GameStage {
 
     @Override
     public void run(Game game) {
+
 
     }
 
@@ -21,6 +24,6 @@ public class RevolutionStage implements GameStage {
 
     @Override
     public int getValue() {
-        return GameStageEnum.SELECT.getValue();
+        return GameStageEnum.REVOLUTION.getValue();
     }
 }

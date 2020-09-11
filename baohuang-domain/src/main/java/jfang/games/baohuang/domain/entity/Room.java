@@ -81,7 +81,7 @@ public class Room extends BaseEntity {
     public void onGameStarted() {
         this.game = new Game(this.playerList);
         RepoUtil.gameRepo.createGame(game);
-        this.game.dealCards();
+        this.game.getGameStage().run(game);
     }
 
 }

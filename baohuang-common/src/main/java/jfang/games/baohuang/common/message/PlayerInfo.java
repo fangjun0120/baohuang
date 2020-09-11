@@ -18,4 +18,5 @@ public class PlayerInfo {
     private Boolean isKing;
     private Integer state;
     private List<CardInfo> cardList;
+    private List<CardInfo> lastHand;
 }

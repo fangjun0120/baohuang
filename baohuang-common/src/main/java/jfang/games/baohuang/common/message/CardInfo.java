@@ -10,7 +10,7 @@ public class CardInfo {
 
     private String suit;
     private String rank;
-    private boolean isAgent;
+    private Boolean agent;
 
     public CardInfo() {
     }
