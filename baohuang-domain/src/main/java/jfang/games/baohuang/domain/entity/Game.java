@@ -1,11 +1,9 @@
 package jfang.games.baohuang.domain.entity;
 
 import jfang.games.baohuang.common.message.MessageDTO;
-import jfang.games.baohuang.common.message.PlayerInfo;
+import jfang.games.baohuang.common.message.PlayerAction;
 import jfang.games.baohuang.domain.BaseEntity;
-import jfang.games.baohuang.domain.card.Card;
-import jfang.games.baohuang.domain.card.GameStageEnum;
-import jfang.games.baohuang.domain.card.PlayerStatus;
+import jfang.games.baohuang.domain.constant.PlayerStatus;
 import jfang.games.baohuang.domain.repo.RepoUtil;
 import jfang.games.baohuang.domain.stage.GameStage;
 import jfang.games.baohuang.domain.stage.InitStage;
@@ -99,18 +97,21 @@ public class Game extends BaseEntity {
 
     public void updatePlayerInfo() {
         for (int i = 0; i < this.players.size(); i++) {
-            updatePlayerInfo(i);
+            updatePlayerInfo(i, null);
         }
     }
 
-    public void updatePlayerInfo(int index) {
+    public void updatePlayerInfo(int index, PlayerAction playerAction) {
         Player player = this.getPlayers().get(index);
         MessageDTO messageDTO = new MessageDTO("server");
         messageDTO.setStage(this.gameStage.getValue());
         messageDTO.setCurrentPlayer(this.currentPlayer);
+        messageDTO.setIsOneOverFour(this.isKingOverFourPublic);
+        messageDTO.setIsRevolution(this.hasRevolution);
         messageDTO.setPlayerInfo(players.stream()
                 .map(p -> p.toPlayerInfo(p.getIndex() == index))
                 .collect(Collectors.toList()));
+        messageDTO.setPlayerAction(playerAction);
         RepoUtil.messageRepo.systemMessage(player.getDisplayName(), messageDTO);
     }
 }

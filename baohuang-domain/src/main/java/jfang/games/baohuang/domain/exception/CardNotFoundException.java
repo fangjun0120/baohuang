@@ -1,6 +1,6 @@
 package jfang.games.baohuang.domain.exception;
 
-import jfang.games.baohuang.domain.card.Card;
+import jfang.games.baohuang.domain.entity.Card;
 
 /**
  * @author jfang

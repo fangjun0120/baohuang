@@ -17,6 +17,7 @@ public class PlayerInfo {
     private Integer index;
     private Boolean isKing;
     private Integer state;
+    private Boolean hasRevolution;
     private List<CardInfo> cardList;
     private List<CardInfo> lastHand;
 }

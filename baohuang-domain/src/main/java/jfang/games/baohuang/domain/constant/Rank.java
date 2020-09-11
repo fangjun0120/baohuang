@@ -1,4 +1,4 @@
-package jfang.games.baohuang.domain.card;
+package jfang.games.baohuang.domain.constant;
 
 import lombok.Getter;
 

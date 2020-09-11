@@ -1,9 +1,9 @@
 package jfang.games.baohuang.domain.stage;
 
 import jfang.games.baohuang.common.message.MessageDTO;
-import jfang.games.baohuang.domain.card.Card;
-import jfang.games.baohuang.domain.card.GameStageEnum;
-import jfang.games.baohuang.domain.card.PlayerStatus;
+import jfang.games.baohuang.domain.entity.Card;
+import jfang.games.baohuang.domain.constant.GameStageEnum;
+import jfang.games.baohuang.domain.constant.PlayerStatus;
 import jfang.games.baohuang.domain.entity.Game;
 import jfang.games.baohuang.domain.entity.Player;
 import org.springframework.util.CollectionUtils;
@@ -24,7 +24,7 @@ public class SelectStage implements GameStage {
     public void run(Game game) {
         Player current = game.getPlayers().get(game.getCurrentPlayer());
         current.setStatus(PlayerStatus.PLAYING);
-        game.updatePlayerInfo(game.getCurrentPlayer());
+        game.updatePlayerInfo(game.getCurrentPlayer(), null);
     }
 
     @Override
@@ -34,6 +34,8 @@ public class SelectStage implements GameStage {
         if (player.getPlayerCards().canBeKing()) {
             Card card = Card.of(messageDTO.getPlayerCallback().getSelectedCards().get(0));
             game.setAgentCard(card);
+            game.setKing(player.getIndex());
+            player.setIsKing(true);
             // find agent
             if (player.getPlayerCards().countSameCard(card) == 4) {
                 game.setKingOverFour(true);
@@ -66,7 +68,7 @@ public class SelectStage implements GameStage {
 
     private void nextStage(Game game) {
         game.updatePlayerInfo();
-        game.setGameStage(new SelectStage());
+        game.setGameStage(new RevolutionStage());
         game.getGameStage().run(game);
     }
 

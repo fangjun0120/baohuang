@@ -1,7 +1,7 @@
 package jfang.games.baohuang.domain.event;
 
 import jfang.games.baohuang.common.message.MessageDTO;
-import jfang.games.baohuang.domain.card.GameStageEnum;
+import jfang.games.baohuang.domain.constant.GameStageEnum;
 import jfang.games.baohuang.domain.entity.Player;
 
 import java.util.ArrayList;

@@ -1,10 +1,10 @@
 package jfang.games.baohuang.domain.stage;
 
 import jfang.games.baohuang.common.message.MessageDTO;
-import jfang.games.baohuang.domain.card.Card;
-import jfang.games.baohuang.domain.card.GameStageEnum;
-import jfang.games.baohuang.domain.card.Rank;
-import jfang.games.baohuang.domain.card.Suit;
+import jfang.games.baohuang.domain.entity.Card;
+import jfang.games.baohuang.domain.constant.GameStageEnum;
+import jfang.games.baohuang.domain.constant.Rank;
+import jfang.games.baohuang.domain.constant.Suit;
 import jfang.games.baohuang.domain.entity.Game;
 import jfang.games.baohuang.domain.entity.PlayerCards;
 

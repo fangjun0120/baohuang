@@ -1,7 +1,7 @@
 package jfang.games.baohuang.domain.entity;
 
 import jfang.games.baohuang.common.message.PlayerInfo;
-import jfang.games.baohuang.domain.card.PlayerStatus;
+import jfang.games.baohuang.domain.constant.PlayerStatus;
 import jfang.games.baohuang.domain.user.User;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,6 +23,10 @@ public class Player {
     private PlayerStatus status = PlayerStatus.INIT;
     @Setter
     private Integer index;
+    @Setter
+    private Boolean isKing;
+    @Setter
+    private Boolean hasRevolution;
 
     public Player(User user) {
         this.userId = user.getId();
@@ -37,6 +41,8 @@ public class Player {
         playerInfo.setPortrait(this.portrait);
         playerInfo.setIndex(this.index);
         playerInfo.setState(this.status.getValue());
+        playerInfo.setIsKing(this.isKing);
+        playerInfo.setHasRevolution(this.hasRevolution);
         if (includeCard) {
             playerInfo.setCardList(playerCards.toCardInfo());
         }

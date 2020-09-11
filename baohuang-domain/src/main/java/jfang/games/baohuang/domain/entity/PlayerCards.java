@@ -1,8 +1,7 @@
 package jfang.games.baohuang.domain.entity;
 
 import jfang.games.baohuang.common.message.CardInfo;
-import jfang.games.baohuang.domain.card.Card;
-import jfang.games.baohuang.domain.card.Rank;
+import jfang.games.baohuang.domain.constant.Rank;
 import jfang.games.baohuang.domain.exception.CardNotFoundException;
 
 import java.util.List;
