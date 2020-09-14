@@ -28,7 +28,7 @@ public class SelectStage implements GameStage {
     }
 
     @Override
-    public void onPlayerMessage(Game game, MessageDTO messageDTO) {
+    public GameControl onPlayerMessage(Game game, MessageDTO messageDTO) {
         Long userId = messageDTO.getPlayerCallback().getUserId();
         Player player = game.getPlayerByUserId(userId);
         if (player.getPlayerCards().canBeKing()) {
@@ -64,6 +64,7 @@ public class SelectStage implements GameStage {
             game.getPlayers().get(index).setStatus(PlayerStatus.PLAYING);
             game.updatePlayerInfo();
         }
+        return new GameControl();
     }
 
     private void nextStage(Game game) {

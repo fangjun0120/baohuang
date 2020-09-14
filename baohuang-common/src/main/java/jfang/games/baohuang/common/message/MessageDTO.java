@@ -18,6 +18,8 @@ public class MessageDTO implements Serializable {
 
     private String source;
 
+    private Long gameId;
+
     /**
      * game stage
      */
@@ -44,9 +46,9 @@ public class MessageDTO implements Serializable {
     /**
      * options for player
      */
-    private PlayerAction playerAction;
+    private PlayerOptions playerOptions;
 
-    private PlayerActionResponse playerActionResponse;
+    private PlayerOptionResponse playerOptionResponse;
 
     public MessageDTO() {
     }

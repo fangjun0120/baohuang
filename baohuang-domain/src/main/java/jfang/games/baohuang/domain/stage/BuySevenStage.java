@@ -44,7 +44,7 @@ public class BuySevenStage implements GameStage {
     }
 
     @Override
-    public void onPlayerMessage(Game game, MessageDTO messageDTO) {
+    public GameControl onPlayerMessage(Game game, MessageDTO messageDTO) {
         Long userId = messageDTO.getPlayerCallback().getUserId();
         Player player = game.getPlayerByUserId(userId);
         Hand selected = Hand.of(messageDTO.getPlayerCallback().getSelectedCards());
@@ -76,6 +76,7 @@ public class BuySevenStage implements GameStage {
             });
             nextStage(game);
         }
+        return new GameControl();
     }
 
     private void nextStage(Game game) {

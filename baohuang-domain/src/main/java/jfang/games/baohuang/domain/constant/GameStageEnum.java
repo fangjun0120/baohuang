@@ -11,7 +11,6 @@ import lombok.Getter;
  *  3. 一打四，起义
  *  4. 进行中，一手牌一手牌执行
  *  5. 结束，统计分数
- *  6. 阶段记分
  *
  * @author Jun
  * @date 2020/4/29
@@ -24,8 +23,7 @@ public enum GameStageEnum {
     SELECT_KING(4),
     REVOLUTION(5),
     RUNNING(6),
-    END(7),
-    REPORT(8);
+    END(7);
 
     @Getter
     private int value;

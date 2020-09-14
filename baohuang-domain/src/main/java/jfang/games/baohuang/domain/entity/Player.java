@@ -20,6 +20,8 @@ public class Player {
     @Setter
     private PlayerCards playerCards;
     @Setter
+    private PlayerAction playerAction;
+    @Setter
     private PlayerStatus status = PlayerStatus.INIT;
     @Setter
     private Integer index;
@@ -27,6 +29,13 @@ public class Player {
     private Boolean isKing;
     @Setter
     private Boolean hasRevolution;
+    /**
+     * 排名，从0开始
+     */
+    @Setter
+    private Integer rank;
+    @Setter
+    private Integer score;
 
     public Player(User user) {
         this.userId = user.getId();
@@ -46,6 +55,22 @@ public class Player {
         if (includeCard) {
             playerInfo.setCardList(playerCards.toCardInfo());
         }
+        if (playerAction != null) {
+            playerInfo.setPass(playerAction.getPass());
+            if (playerAction.getLastHand() != null) {
+                playerInfo.setLastHand(playerAction.getLastHand().toCardInfoList());
+            }
+        }
         return playerInfo;
+    }
+
+    public boolean isDead() {
+        return this.getPlayerCards() != null
+                && this.getPlayerCards().count() == 1
+                && this.playerCards.countSeven() == 1;
+    }
+
+    public boolean isCompleted() {
+        return this.getPlayerCards() != null && this.getPlayerCards().count() == 0;
     }
 }

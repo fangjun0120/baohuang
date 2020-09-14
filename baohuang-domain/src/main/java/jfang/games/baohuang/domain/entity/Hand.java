@@ -62,6 +62,10 @@ public class Hand {
         return new Hand(cardInfoList.stream().map(Card::of).collect(Collectors.toList()));
     }
 
+    public List<CardInfo> toCardInfoList() {
+        return this.cards.stream().map(Card::toCardInfo).collect(Collectors.toList());
+    }
+
     public String toDisplayString() {
         return cards.stream().map(Card::toDisplayString).collect(Collectors.joining(" "));
     }

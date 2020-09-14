@@ -19,5 +19,6 @@ public class PlayerInfo {
     private Integer state;
     private Boolean hasRevolution;
     private List<CardInfo> cardList;
+    private Boolean pass;
     private List<CardInfo> lastHand;
 }

@@ -5,7 +5,9 @@ import jfang.games.baohuang.common.message.MessageDTO;
 import jfang.games.baohuang.domain.entity.Player;
 import jfang.games.baohuang.domain.entity.Room;
 import jfang.games.baohuang.domain.repo.RoomRepo;
+import jfang.games.baohuang.domain.stage.GameControl;
 import jfang.games.baohuang.util.SecurityUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -13,6 +15,7 @@ import javax.annotation.Resource;
 /**
  * @author jfang
  */
+@Slf4j
 @Component
 public class RoomService {
 
@@ -31,7 +34,19 @@ public class RoomService {
 
     public void onPlayerMessage(Long id, MessageDTO message) {
         Room room = roomCache.getRoomById(id);
+        if (!message.getGameId().equals(room.getGame().getId())) {
+            log.warn("game not match {} from source {}", message.getGameId(), message.getSource());
+            return;
+        }
         // TODO: check stage
-        room.getGame().getGameStage().onPlayerMessage(room.getGame(), message);
+        GameControl gameControl = room.getGame().getGameStage().onPlayerMessage(room.getGame(), message);
+        if (Boolean.TRUE.equals(gameControl.getRestart())) {
+            room.onGameStarted();
+            return;
+        }
+        if (gameControl.getPlayerToRemove() != null) {
+            room.resetGame();
+            room.removePlayer(gameControl.getPlayerToRemove());
+        }
     }
 }

@@ -1,7 +1,7 @@
 package jfang.games.baohuang.domain.entity;
 
 import jfang.games.baohuang.common.message.MessageDTO;
-import jfang.games.baohuang.common.message.PlayerAction;
+import jfang.games.baohuang.common.message.PlayerOptions;
 import jfang.games.baohuang.domain.BaseEntity;
 import jfang.games.baohuang.domain.constant.PlayerStatus;
 import jfang.games.baohuang.domain.repo.RepoUtil;
@@ -32,6 +32,12 @@ public class Game extends BaseEntity {
     private GameStage gameStage = new InitStage();
 
     /**
+     * 排名序列，从0开始
+     */
+    private int rankIndex = 0;
+    private int reverseRankIndex = 4;
+
+    /**
      * 主公
      */
     private Integer king;
@@ -45,6 +51,11 @@ public class Game extends BaseEntity {
      * 当前轮次玩家
      */
     private Integer currentPlayer;
+
+    /**
+     * 当前领先的玩家
+     */
+    private Integer currentLeader;
 
     /**
      * 保镖牌
@@ -79,7 +90,7 @@ public class Game extends BaseEntity {
                 .findFirst().orElseThrow(RuntimeException::new);
     }
 
-    public Integer nextPlayer() {
+    public int nextPlayer() {
         int index = this.currentPlayer + 1;
         while (index != this.currentPlayer) {
             if (index > 4) {
@@ -95,13 +106,31 @@ public class Game extends BaseEntity {
         return index;
     }
 
+    public void addCompletedPlayer(int index, boolean isDead) {
+        if (isDead) {
+            this.players.get(index).setRank(this.reverseRankIndex--);
+        } else {
+            this.players.get(index).setRank(this.rankIndex++);
+        }
+    }
+
+    public boolean isCompleted() {
+        if (this.isKingOverFourPublic) {
+            return this.players.get(this.king).getRank() != null || this.rankIndex > 0;
+        }
+        if (this.isKingOverFour) {
+            return this.players.get(this.king).getRank() != null || this.rankIndex > 1;
+        }
+        return false;
+    }
+
     public void updatePlayerInfo() {
         for (int i = 0; i < this.players.size(); i++) {
             updatePlayerInfo(i, null);
         }
     }
 
-    public void updatePlayerInfo(int index, PlayerAction playerAction) {
+    public void updatePlayerInfo(int index, PlayerOptions playerOptions) {
         Player player = this.getPlayers().get(index);
         MessageDTO messageDTO = new MessageDTO("server");
         messageDTO.setStage(this.gameStage.getValue());
@@ -111,7 +140,58 @@ public class Game extends BaseEntity {
         messageDTO.setPlayerInfo(players.stream()
                 .map(p -> p.toPlayerInfo(p.getIndex() == index))
                 .collect(Collectors.toList()));
-        messageDTO.setPlayerAction(playerAction);
+        messageDTO.setPlayerOptions(playerOptions);
         RepoUtil.messageRepo.systemMessage(player.getDisplayName(), messageDTO);
+    }
+
+    public void buildRank() {
+        if (this.isKingOverFour) {
+            int base = 3;
+            if (this.hasRevolution) {
+                base *= 2;
+            }
+            if (this.isKingOverFourPublic) {
+                base *= 2;
+                if (this.players.get(this.king).getRank() == 0) {
+                    setPlayerScores(-1 * base, true);
+                } else {
+                    setPlayerScores(base, true);
+                }
+            } else {
+                if (this.players.get(this.king).getRank() == 0) {
+                    setPlayerScores(-1 * base, true);
+                } else if (this.players.get(this.king).getRank() == 1) {
+                    setPlayerScores(0, true);
+                } else {
+                    setPlayerScores(base, true);
+                }
+            }
+        } else {
+            int base = this.players.get(this.king).getRank() + this.players.get(this.agent).getRank() - 4;
+            if (this.hasRevolution) {
+                base *= 2;
+            }
+            setPlayerScores(base, false);
+        }
+    }
+
+    private void setPlayerScores(int base, boolean oneOverFour) {
+        for (Player player: this.getPlayers()) {
+            if (oneOverFour) {
+                if (player.getIndex().equals(this.king)) {
+                    player.setScore(-4 * base);
+                } else {
+                    player.setScore(base);
+                }
+            } else {
+                if (player.getIndex().equals(this.king)) {
+                    player.setScore(-2 * base);
+                } else if (player.getIndex().equals(this.agent)) {
+                    player.setScore(-1 * base);
+                } else {
+                    player.setScore(base);
+                }
+            }
+        }
     }
 }

@@ -1,8 +1,8 @@
 package jfang.games.baohuang.domain.stage;
 
 import jfang.games.baohuang.common.message.MessageDTO;
-import jfang.games.baohuang.common.message.PlayerAction;
-import jfang.games.baohuang.common.message.PlayerActionEnum;
+import jfang.games.baohuang.common.message.PlayerOptions;
+import jfang.games.baohuang.common.message.PlayerOptionEnum;
 import jfang.games.baohuang.domain.constant.GameStageEnum;
 import jfang.games.baohuang.domain.constant.PlayerStatus;
 import jfang.games.baohuang.domain.entity.Game;
@@ -21,7 +21,7 @@ public class RevolutionStage implements GameStage {
             if (game.getKing().equals(player.getIndex())) {
                 if (game.isKingOverFour()) {
                     player.setStatus(PlayerStatus.PLAYING);
-                    game.updatePlayerInfo(player.getIndex(), PlayerAction.of(PlayerActionEnum.ONE_OVER_FOUR, null));
+                    game.updatePlayerInfo(player.getIndex(), PlayerOptions.of(PlayerOptionEnum.ONE_OVER_FOUR, null));
                 } else {
                     player.setStatus(PlayerStatus.WAITING);
                     game.updatePlayerInfo(player.getIndex(), null);
@@ -31,28 +31,27 @@ public class RevolutionStage implements GameStage {
                 game.updatePlayerInfo(player.getIndex(), null);
             } else {
                 player.setStatus(PlayerStatus.PLAYING);
-                game.updatePlayerInfo(player.getIndex(), PlayerAction.of(PlayerActionEnum.REVOLUTION, null));
+                game.updatePlayerInfo(player.getIndex(), PlayerOptions.of(PlayerOptionEnum.REVOLUTION, null));
             }
         }
     }
 
     @Override
-    public void onPlayerMessage(Game game, MessageDTO messageDTO) {
+    public GameControl onPlayerMessage(Game game, MessageDTO messageDTO) {
         Long userId = messageDTO.getPlayerCallback().getUserId();
         Player player = game.getPlayerByUserId(userId);
         player.setStatus(PlayerStatus.WAITING);
         if (player.getIndex().equals(game.getKing())) {
-            if (Boolean.TRUE.equals(messageDTO.getPlayerActionResponse().getResponse())) {
+            if (Boolean.TRUE.equals(messageDTO.getPlayerOptionResponse().getResponse())) {
                 game.setKingOverFourPublic(true);
                 game.updatePlayerInfo();
             }
         } else {
-            if (Boolean.TRUE.equals(messageDTO.getPlayerActionResponse().getResponse())) {
+            if (Boolean.TRUE.equals(messageDTO.getPlayerOptionResponse().getResponse())) {
                 player.setHasRevolution(true);
                 game.updatePlayerInfo();
             }
         }
-
         if (game.getPlayers().stream().noneMatch(p -> p.getStatus() == PlayerStatus.PLAYING)) {
             if (game.getPlayers().stream()
                     .filter(p -> !p.getIndex().equals(game.getKing()) && !p.getIndex().equals(game.getAgent()))
@@ -61,6 +60,7 @@ public class RevolutionStage implements GameStage {
             }
             nextStage(game);
         }
+        return new GameControl();
     }
 
     private void nextStage(Game game) {

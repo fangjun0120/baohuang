@@ -31,8 +31,8 @@ public class ShuffleStage implements GameStage {
     }
 
     @Override
-    public void onPlayerMessage(Game game, MessageDTO messageDTO) {
-
+    public GameControl onPlayerMessage(Game game, MessageDTO messageDTO) {
+        return new GameControl();
     }
 
     @Override

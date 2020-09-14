@@ -77,6 +77,10 @@ public class PlayerCards {
         }
     }
 
+    public int count() {
+        return this.cardList.size();
+    }
+
     public List<CardInfo> toCardInfo() {
         return this.cardList.stream().map(Card::toCardInfo).collect(Collectors.toList());
     }

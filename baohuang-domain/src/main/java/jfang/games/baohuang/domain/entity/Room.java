@@ -42,10 +42,6 @@ public class Room extends BaseEntity {
         onPlayerRemoved(player);
     }
 
-    public void onUserMessageReceived() {
-
-    }
-
     /**
      * 广播给其他人
      */
@@ -84,4 +80,7 @@ public class Room extends BaseEntity {
         this.game.getGameStage().run(game);
     }
 
+    public void resetGame() {
+        this.game = null;
+    }
 }
