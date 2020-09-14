@@ -1,10 +1,10 @@
 package jfang.games.baohuang.domain.stage;
 
 import jfang.games.baohuang.common.message.MessageDTO;
-import jfang.games.baohuang.domain.entity.Card;
 import jfang.games.baohuang.domain.constant.GameStageEnum;
 import jfang.games.baohuang.domain.constant.Rank;
 import jfang.games.baohuang.domain.constant.Suit;
+import jfang.games.baohuang.domain.entity.Card;
 import jfang.games.baohuang.domain.entity.Game;
 import jfang.games.baohuang.domain.entity.PlayerCards;
 
@@ -31,8 +31,7 @@ public class ShuffleStage implements GameStage {
     }
 
     @Override
-    public GameControl onPlayerMessage(Game game, MessageDTO messageDTO) {
-        return new GameControl();
+    public void onPlayerMessage(Game game, MessageDTO messageDTO) {
     }
 
     @Override

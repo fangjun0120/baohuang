@@ -1,12 +1,12 @@
 package jfang.games.baohuang.domain.stage;
 
 import jfang.games.baohuang.common.message.MessageDTO;
-import jfang.games.baohuang.domain.entity.Card;
 import jfang.games.baohuang.domain.constant.GameStageEnum;
 import jfang.games.baohuang.domain.constant.PlayerStatus;
 import jfang.games.baohuang.domain.constant.Rank;
-import jfang.games.baohuang.domain.entity.Hand;
+import jfang.games.baohuang.domain.entity.Card;
 import jfang.games.baohuang.domain.entity.Game;
+import jfang.games.baohuang.domain.entity.Hand;
 import jfang.games.baohuang.domain.entity.Player;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class BuySevenStage implements GameStage {
     }
 
     @Override
-    public GameControl onPlayerMessage(Game game, MessageDTO messageDTO) {
+    public void onPlayerMessage(Game game, MessageDTO messageDTO) {
         Long userId = messageDTO.getPlayerCallback().getUserId();
         Player player = game.getPlayerByUserId(userId);
         Hand selected = Hand.of(messageDTO.getPlayerCallback().getSelectedCards());
@@ -76,7 +76,6 @@ public class BuySevenStage implements GameStage {
             });
             nextStage(game);
         }
-        return new GameControl();
     }
 
     private void nextStage(Game game) {

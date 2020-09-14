@@ -77,11 +77,17 @@ public class Game extends BaseEntity {
      */
     private boolean isKingOverFourPublic;
 
+    /**
+     * 标记结束
+     */
+    private boolean completed;
+
     public Game() {
     }
 
     public Game(List<Player> players) {
         this.players = players;
+        RepoUtil.gameRepo.createGame(this);
     }
 
     public Player getPlayerByUserId(Long userId) {

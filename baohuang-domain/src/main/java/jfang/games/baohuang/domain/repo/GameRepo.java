@@ -8,4 +8,6 @@ import jfang.games.baohuang.domain.entity.Game;
 public interface GameRepo {
 
     void createGame(Game game);
+
+    void saveGame(Game game);
 }

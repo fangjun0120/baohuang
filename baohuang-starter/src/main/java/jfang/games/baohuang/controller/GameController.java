@@ -4,6 +4,7 @@ import jfang.games.baohuang.common.message.MessageDTO;
 import jfang.games.baohuang.common.util.JsonUtil;
 import jfang.games.baohuang.domain.repo.MessageRepo;
 import jfang.games.baohuang.service.RoomService;
+import jfang.games.baohuang.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.MessageHeaders;
@@ -69,6 +70,7 @@ public class GameController {
     public void onConnectionDestroyed(SessionDisconnectEvent event) {
         Principal principal = event.getUser();
         log.info("User {} disconnected", principal == null ? "NA" : principal.getName());
+        roomService.onPlayerLeft(SecurityUtil.getCurrentUser().getUser().getId());
     }
 
     @EventListener

@@ -5,10 +5,11 @@ import lombok.Getter;
 /**
  * 玩家的状态
  * 0. 等待开始
- * 1. 等待其他玩家出牌
- * 2. 玩家出牌中
- * 3. 玩家出完了牌
- * 4. 被闷了
+ * 1. 游戏准备
+ * 2. 等待其他玩家出牌
+ * 3. 玩家出牌中
+ * 4. 玩家出完了牌
+ * 5. 被闷了
  *
  * @author Jun
  * @date 2020/4/29
@@ -16,10 +17,11 @@ import lombok.Getter;
 public enum PlayerStatus {
 
     INIT(0),
-    WAITING(1),
-    PLAYING(2),
-    COMPLETED(3),
-    DEAD(4);
+    READY(1),
+    WAITING(2),
+    PLAYING(3),
+    COMPLETED(4),
+    DEAD(5);
 
     @Getter
     private int value;

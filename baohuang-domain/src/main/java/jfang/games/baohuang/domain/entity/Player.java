@@ -73,4 +73,14 @@ public class Player {
     public boolean isCompleted() {
         return this.getPlayerCards() != null && this.getPlayerCards().count() == 0;
     }
+
+    public void reset() {
+        this.playerCards = null;
+        this.playerAction = null;
+        this.status = PlayerStatus.INIT;
+        this.isKing = null;
+        this.hasRevolution = null;
+        this.rank = null;
+        this.score = null;
+    }
 }

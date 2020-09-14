@@ -1,8 +1,8 @@
 package jfang.games.baohuang.domain.stage;
 
 import jfang.games.baohuang.common.message.MessageDTO;
-import jfang.games.baohuang.common.message.PlayerOptions;
 import jfang.games.baohuang.common.message.PlayerOptionEnum;
+import jfang.games.baohuang.common.message.PlayerOptions;
 import jfang.games.baohuang.domain.constant.GameStageEnum;
 import jfang.games.baohuang.domain.constant.PlayerStatus;
 import jfang.games.baohuang.domain.entity.Game;
@@ -37,7 +37,7 @@ public class RevolutionStage implements GameStage {
     }
 
     @Override
-    public GameControl onPlayerMessage(Game game, MessageDTO messageDTO) {
+    public void onPlayerMessage(Game game, MessageDTO messageDTO) {
         Long userId = messageDTO.getPlayerCallback().getUserId();
         Player player = game.getPlayerByUserId(userId);
         player.setStatus(PlayerStatus.WAITING);
@@ -60,7 +60,6 @@ public class RevolutionStage implements GameStage {
             }
             nextStage(game);
         }
-        return new GameControl();
     }
 
     private void nextStage(Game game) {

@@ -20,7 +20,7 @@ public interface GameStage {
      * @param messageDTO 消息
      * @return 对当前游戏的控制
      */
-    GameControl onPlayerMessage(Game game, MessageDTO messageDTO);
+    void onPlayerMessage(Game game, MessageDTO messageDTO);
 
     /**
      * 当前阶段序列号

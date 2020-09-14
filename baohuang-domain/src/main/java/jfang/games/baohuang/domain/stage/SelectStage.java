@@ -1,9 +1,9 @@
 package jfang.games.baohuang.domain.stage;
 
 import jfang.games.baohuang.common.message.MessageDTO;
-import jfang.games.baohuang.domain.entity.Card;
 import jfang.games.baohuang.domain.constant.GameStageEnum;
 import jfang.games.baohuang.domain.constant.PlayerStatus;
+import jfang.games.baohuang.domain.entity.Card;
 import jfang.games.baohuang.domain.entity.Game;
 import jfang.games.baohuang.domain.entity.Player;
 import org.springframework.util.CollectionUtils;
@@ -28,7 +28,7 @@ public class SelectStage implements GameStage {
     }
 
     @Override
-    public GameControl onPlayerMessage(Game game, MessageDTO messageDTO) {
+    public void onPlayerMessage(Game game, MessageDTO messageDTO) {
         Long userId = messageDTO.getPlayerCallback().getUserId();
         Player player = game.getPlayerByUserId(userId);
         if (player.getPlayerCards().canBeKing()) {
@@ -64,7 +64,6 @@ public class SelectStage implements GameStage {
             game.getPlayers().get(index).setStatus(PlayerStatus.PLAYING);
             game.updatePlayerInfo();
         }
-        return new GameControl();
     }
 
     private void nextStage(Game game) {

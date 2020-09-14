@@ -2,10 +2,10 @@ package jfang.games.baohuang.service;
 
 import jfang.games.baohuang.adapter.UserDetailAdapter;
 import jfang.games.baohuang.common.message.MessageDTO;
+import jfang.games.baohuang.domain.constant.PlayerStatus;
 import jfang.games.baohuang.domain.entity.Player;
 import jfang.games.baohuang.domain.entity.Room;
 import jfang.games.baohuang.domain.repo.RoomRepo;
-import jfang.games.baohuang.domain.stage.GameControl;
 import jfang.games.baohuang.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -32,21 +32,24 @@ public class RoomService {
         room.addPlayer(player);
     }
 
+    public void onPlayerLeft(Long userId) {
+        Long roomId = roomCache.findRoomIdByUserId(userId);
+        Room room = roomCache.getRoomById(roomId);
+        room.removePlayer(userId);
+    }
+
     public void onPlayerMessage(Long id, MessageDTO message) {
         Room room = roomCache.getRoomById(id);
         if (!message.getGameId().equals(room.getGame().getId())) {
             log.warn("game not match {} from source {}", message.getGameId(), message.getSource());
             return;
         }
-        // TODO: check stage
-        GameControl gameControl = room.getGame().getGameStage().onPlayerMessage(room.getGame(), message);
-        if (Boolean.TRUE.equals(gameControl.getRestart())) {
-            room.onGameStarted();
-            return;
-        }
-        if (gameControl.getPlayerToRemove() != null) {
-            room.resetGame();
-            room.removePlayer(gameControl.getPlayerToRemove());
+        if (room.getGame().isCompleted()) {
+            for (Player player: room.getPlayerList()) {
+                player.setStatus(PlayerStatus.INIT);
+                room.resetGame();
+            }
+            room.getGame().updatePlayerInfo();
         }
     }
 }

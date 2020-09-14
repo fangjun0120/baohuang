@@ -26,4 +26,9 @@ public class GameRepository implements GameRepo {
             game.setId(gamePO.getId());
         }
     }
+
+    @Override
+    public void saveGame(Game game) {
+
+    }
 }

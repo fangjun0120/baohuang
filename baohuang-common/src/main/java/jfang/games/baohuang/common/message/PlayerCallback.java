@@ -11,6 +11,7 @@ import java.util.List;
 public class PlayerCallback {
 
     private Long userId;
+    private Boolean ready;
     private Boolean pass;
     private List<CardInfo> selectedCards;
 }

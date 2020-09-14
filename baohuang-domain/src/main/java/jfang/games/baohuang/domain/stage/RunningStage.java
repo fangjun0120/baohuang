@@ -21,7 +21,7 @@ public class RunningStage implements GameStage {
     }
 
     @Override
-    public GameControl onPlayerMessage(Game game, MessageDTO messageDTO) {
+    public void onPlayerMessage(Game game, MessageDTO messageDTO) {
         Long userId = messageDTO.getPlayerCallback().getUserId();
         Player player = game.getPlayerByUserId(userId);
         if (!game.getCurrentPlayer().equals(player.getIndex())) {
@@ -79,7 +79,6 @@ public class RunningStage implements GameStage {
             game.setCurrentPlayer(nextPlayer);
         }
         game.updatePlayerInfo();
-        return new GameControl();
     }
 
     @Override
