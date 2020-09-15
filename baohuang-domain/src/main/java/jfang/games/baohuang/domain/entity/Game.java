@@ -24,6 +24,7 @@ public class Game extends BaseEntity {
 
     private static final long serialVersionUID = 3142574777412945362L;
 
+    private Long roomId;
     /**
      * 所有玩家
      */
@@ -85,7 +86,8 @@ public class Game extends BaseEntity {
     public Game() {
     }
 
-    public Game(List<Player> players) {
+    public Game(Long roomId, List<Player> players) {
+        this.roomId = roomId;
         this.players = players;
         RepoUtil.gameRepo.createGame(this);
     }

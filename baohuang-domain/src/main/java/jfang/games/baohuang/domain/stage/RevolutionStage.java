@@ -4,9 +4,11 @@ import jfang.games.baohuang.common.message.MessageDTO;
 import jfang.games.baohuang.common.message.PlayerOptionEnum;
 import jfang.games.baohuang.common.message.PlayerOptions;
 import jfang.games.baohuang.domain.constant.GameStageEnum;
+import jfang.games.baohuang.domain.constant.GuideMessage;
 import jfang.games.baohuang.domain.constant.PlayerStatus;
 import jfang.games.baohuang.domain.entity.Game;
 import jfang.games.baohuang.domain.entity.Player;
+import jfang.games.baohuang.domain.repo.RepoUtil;
 
 /**
  * 是否明牌一打四，是否起义
@@ -34,6 +36,7 @@ public class RevolutionStage implements GameStage {
                 game.updatePlayerInfo(player.getIndex(), PlayerOptions.of(PlayerOptionEnum.REVOLUTION, null));
             }
         }
+        RepoUtil.messageRepo.broadcastRoom(game.getRoomId(), GuideMessage.REVOLUTION);
     }
 
     @Override
@@ -45,11 +48,15 @@ public class RevolutionStage implements GameStage {
             if (Boolean.TRUE.equals(messageDTO.getPlayerOptionResponse().getResponse())) {
                 game.setKingOverFourPublic(true);
                 game.updatePlayerInfo();
+                RepoUtil.messageRepo.broadcastRoom(game.getRoomId(),
+                        String.format(GuideMessage.REVOLUTION_KING, player.getDisplayName()));
             }
         } else {
             if (Boolean.TRUE.equals(messageDTO.getPlayerOptionResponse().getResponse())) {
                 player.setHasRevolution(true);
                 game.updatePlayerInfo();
+                RepoUtil.messageRepo.broadcastRoom(game.getRoomId(),
+                        String.format(GuideMessage.REVOLUTION_OTHER, player.getDisplayName()));
             }
         }
         if (game.getPlayers().stream().noneMatch(p -> p.getStatus() == PlayerStatus.PLAYING)) {
@@ -63,7 +70,6 @@ public class RevolutionStage implements GameStage {
     }
 
     private void nextStage(Game game) {
-        game.updatePlayerInfo();
         game.setGameStage(new RunningStage());
         game.getGameStage().run(game);
     }

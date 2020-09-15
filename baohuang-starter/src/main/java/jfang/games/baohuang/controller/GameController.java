@@ -62,14 +62,11 @@ public class GameController {
 
     @EventListener
     public void onConnectionBuild(SessionConnectedEvent event) {
-        Principal principal = event.getUser();
-        log.info("user {} connected", principal == null ? "NA" : principal.getName());
+        roomService.onPlayerJoin(SecurityUtil.getCurrentUser().getUser().getId());
     }
 
     @EventListener
     public void onConnectionDestroyed(SessionDisconnectEvent event) {
-        Principal principal = event.getUser();
-        log.info("User {} disconnected", principal == null ? "NA" : principal.getName());
         roomService.onPlayerLeft(SecurityUtil.getCurrentUser().getUser().getId());
     }
 

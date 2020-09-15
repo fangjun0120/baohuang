@@ -2,11 +2,13 @@ package jfang.games.baohuang.domain.stage;
 
 import jfang.games.baohuang.common.message.MessageDTO;
 import jfang.games.baohuang.domain.constant.GameStageEnum;
+import jfang.games.baohuang.domain.constant.GuideMessage;
 import jfang.games.baohuang.domain.constant.Rank;
 import jfang.games.baohuang.domain.constant.Suit;
 import jfang.games.baohuang.domain.entity.Card;
 import jfang.games.baohuang.domain.entity.Game;
 import jfang.games.baohuang.domain.entity.PlayerCards;
+import jfang.games.baohuang.domain.repo.RepoUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,9 +22,11 @@ public class ShuffleStage implements GameStage {
 
     @Override
     public void run(Game game) {
+        RepoUtil.messageRepo.broadcastRoom(game.getRoomId(), GuideMessage.SHUFFLE_START);
         boolean goodToGo = dealCards(game);
         // 都不能立，重发
         while (!goodToGo) {
+            RepoUtil.messageRepo.broadcastRoom(game.getRoomId(), GuideMessage.SHUFFLE_AGAIN);
             goodToGo = dealCards(game);
         }
         game.updatePlayerInfo();

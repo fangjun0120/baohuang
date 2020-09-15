@@ -2,10 +2,15 @@ package jfang.games.baohuang.domain.stage;
 
 import jfang.games.baohuang.common.message.MessageDTO;
 import jfang.games.baohuang.domain.constant.GameStageEnum;
+import jfang.games.baohuang.domain.constant.GuideMessage;
 import jfang.games.baohuang.domain.constant.PlayerStatus;
 import jfang.games.baohuang.domain.entity.Game;
 import jfang.games.baohuang.domain.entity.Player;
+import jfang.games.baohuang.domain.repo.RepoUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
+
+import java.util.stream.Collectors;
 
 /**
  * 准备过程
@@ -32,6 +37,13 @@ public class InitStage implements GameStage {
             }
         } else {
             player.setStatus(PlayerStatus.INIT);
+        }
+        String names = game.getPlayers().stream()
+                .filter(p -> p.getStatus() == PlayerStatus.READY)
+                .map(Player::getDisplayName)
+                .collect(Collectors.joining(","));
+        if (!StringUtils.isEmpty(names)) {
+            RepoUtil.messageRepo.broadcastRoom(game.getRoomId(), String.format(GuideMessage.PLAYER_READY, names));
         }
         game.updatePlayerInfo();
     }

@@ -7,6 +7,15 @@ function wsConnect() {
             console.log("received message " + response);
             showResponse(response.body);
         }, {});
+        wsSubscribe('/user/message', function(response) {
+            console.log("user message " + response);
+            showResponse(response.body);
+        }, {});
+        wsSubscribe('/user/system', function(response) {
+            console.log("system message " + response);
+            let body = JSON.parse(response.body)
+            onSystemMessage(body)
+        }, {});
     }, function(error) {
         console.log("connect error: " + error);
     });
@@ -36,7 +45,8 @@ function wsSendMessage() {
 }
 
 function wsSendSystemMessage(message) {
-    send("/app/system/" + roomId, {}, message);
+    let body = JSON.stringify(message)
+    send("/app/system/" + roomId, {}, body);
 }
 
 function showResponse(message) {

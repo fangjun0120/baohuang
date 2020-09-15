@@ -22,17 +22,17 @@ public class MessageRepository implements MessageRepo {
         template.convertAndSend("/topic/player/" + roomId, message);
     }
 
-    /**
-     * /user/message
-     *
-     * @param username
-     * @param message
-     */
     @Override
     public void sendMessage(String username, String message) {
         template.convertAndSendToUser(username, "/message", message);
     }
 
+    /**
+     * /user/system
+     *
+     * @param username username
+     * @param message message
+     */
     @Override
     public void systemMessage(String username, MessageDTO message) {
         template.convertAndSendToUser(username, "/system", message);

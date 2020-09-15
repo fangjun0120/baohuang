@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -49,32 +49,38 @@
     </div>
     <div>
         <input id="roomId" type="hidden" th:value="${roomId}" />
+        <input id="userId" type="hidden" th:value="${#authentication.principal.user.id}" />
     </div>
 
     <script th:src="@{/js/jquery-3.3.1.slim.min.js}"></script>
     <script th:src="@{/js/popper-1.14.7.min.js}"></script>
     <script th:src="@{/js/bootstrap-4.3.1.min.js}"></script>
+    <script th:src="@{/js/bootbox-5.4.0.min.js}"></script>
     <script th:src="@{/js/stomp-2.3.3.min.js}"></script>
-    <script th:src="@{/js/ws.js}"></script>
 
+    <script th:src="@{/js/ws.js}"></script>
     <script th:src='@{/js/poker.min.js}'></script>
     <script th:src='@{/js/matrix.js}'></script>
     <script th:src='@{/js/draw.js}'></script>
     <script th:src='@{/js/event.js}'></script>
+    <script th:src='@{/js/game.js}'></script>
     <script>
         let canvas;
         let context;
-        let cardList = [];
+        let game = null;
+        let thisPlayer = null;
         let selected = new Set();
         let mainCardDelta;
         let mainCardXOffset;
         let stompClient;
         let roomId;
+        let userId;
 
         window.onload = function() {
-            roomId = $("#roomId").val();
-            canvas = document.getElementById('my-canvas');
-            canvas.width = $("#canvas").width();
+            roomId = $("#roomId").val()
+            userId = $("#userId").val()
+            canvas = document.getElementById('my-canvas')
+            canvas.width = $("#canvas").width()
             canvas.height = document.documentElement.clientHeight;
             context = canvas.getContext('2d')
             canvas.addEventListener('click', function(event) {

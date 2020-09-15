@@ -43,7 +43,7 @@ public class Room extends BaseEntity {
 
     public void addPlayer(Player player) {
         if (game == null) {
-            this.game = new Game(this.playerList);
+            this.game = new Game(this.id, this.playerList);
             this.game.getGameStage().run(game);
         }
         playerList.add(player);
@@ -67,13 +67,14 @@ public class Room extends BaseEntity {
     }
 
     public void resetGame() {
-        this.game = new Game(this.playerList);
+        this.game = new Game(this.id, this.playerList);
         this.game.getGameStage().run(game);
     }
 
     public void updateRoomInfo() {
         for (Player player: this.playerList) {
             MessageDTO messageDTO = new MessageDTO("server");
+            messageDTO.setGameId(this.game.getId());
             messageDTO.setStage(GameStageEnum.INIT.getValue());
             messageDTO.setPlayerInfo(new ArrayList<>());
             messageDTO.getPlayerInfo().add(player.toPlayerInfo(false));

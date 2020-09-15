@@ -9,6 +9,53 @@ function getRegion(x, y, width, height) {
   }
 }
 
+function getCardRegionByIndex(index) {
+  if (0 === getRelativeIndex(index)) {
+    return getMainCardRegion()
+  }
+  if (1 === getRelativeIndex(index)) {
+    return getButtonLeftCardRegion()
+  }
+  if (2 === getRelativeIndex(index)) {
+    return getTopLeftCardRegion()
+  }
+  if (-1 === getRelativeIndex(index)) {
+    return getButtonRightCardRegion()
+  }
+  if (-2 === getRelativeIndex(index)) {
+    return getTopRightCardRegion()
+  }
+}
+
+function getPortraitByIndex(index) {
+  if (0 === getRelativeIndex(index)) {
+    return getMainPortraitRegion()
+  }
+  if (1 === getRelativeIndex(index)) {
+    return getButtonLeftPortraitRegion()
+  }
+  if (2 === getRelativeIndex(index)) {
+    return getTopLeftPortraitRegion()
+  }
+  if (-1 === getRelativeIndex(index)) {
+    return getButtonRightPortraitRegion()
+  }
+  if (-2 === getRelativeIndex(index)) {
+    return getTopRightPortraitRegion()
+  }
+}
+
+function getRelativeIndex(index) {
+  let i = thisPlayer.index - index
+  if (i > 2) {
+    return i - 5
+  }
+  if (i < -2) {
+    return i + 5
+  }
+  return i
+}
+
 function getDeckRegion() {
   return getRegion(3, 18, 17, 6)
 }

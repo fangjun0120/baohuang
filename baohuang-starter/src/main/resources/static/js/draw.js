@@ -5,6 +5,7 @@ function getOverrideRatio() {
 
 // 渲染所有牌，牌宽高比 3：4
 function drawCards(region, cards, selectedSet, align) {
+    clearRegion(region)
     let cardHeight = region.height * 0.75;
     let cardWidthDelta = cardHeight * 0.75 * getOverrideRatio();
     let cardListWidth = cardWidthDelta * (cards.length - 1) + cardHeight * 0.75;
@@ -39,7 +40,8 @@ function drawCards(region, cards, selectedSet, align) {
     }
 }
 
-function drawPortrait(region, image, name) {
+function drawPortrait(region, image, name, isCurrent) {
+    clearRegion(region)
     let width = Math.min(region.height * 0.5, region.width * 0.75);
     let x = region.x + region.width * 0.5 - width * 0.5;
     let y = region.y + region.height * 0.5 - width * 0.75;
@@ -51,6 +53,10 @@ function drawPortrait(region, image, name) {
     let y2 = region.y + region.height * 0.5 + width * 0.5;
     context.font = Math.floor(width * 0.25 * 0.8) + "px Arial";
     context.fillText(name, x, y2);
+    if (isCurrent) {
+        context.strokeStyle('red');
+        context.strokeRect(region.x, region.y, region.width, region.height);
+    }
 }
 
 function drawCardBack(region) {
@@ -60,19 +66,30 @@ function drawCardBack(region) {
     context.drawPokerBack(x, y, height);
 }
 
-function drawButton() {
+function drawButton(cancelText, submitText) {
     let pass = getPassButtonRegion();
+    clearRegion(pass);
     context.strokeRect(pass.x, pass.y, pass.width, pass.height);
-    drawText(pass.x + pass.width * 0.5, pass.y + pass.height * 0.5, "不要", pass.height * 0.8);
+    drawText(pass.x + pass.width * 0.5, pass.y + pass.height * 0.5, cancelText, pass.height * 0.8);
     let submit = getSubmitButtonRegion();
+    clearRegion(submit);
     context.strokeRect(submit.x, submit.y, submit.width, submit.height);
-    drawText(submit.x + submit.width * 0.5, submit.y + submit.height * 0.5, "确定", submit.height * 0.8);
+    drawText(submit.x + submit.width * 0.5, submit.y + submit.height * 0.5, submitText, submit.height * 0.8);
 }
 
 function drawText(centerX, centerY, text, size) {
     context.font = Math.floor(size) + "px Arial";
     context.textAlign = "center";
     context.fillText(text, centerX, centerY);
+}
+
+function clearButton() {
+    clearRegion(getPassButtonRegion());
+    clearRegion(getSubmitButtonRegion())
+}
+
+function clearRegion(region) {
+    context.clearRect(region.x, region.y, region.width, region.height);
 }
 
 function drawBox(region) {

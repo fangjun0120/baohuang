@@ -2,7 +2,7 @@ package jfang.games.baohuang.domain.entity;
 
 import jfang.games.baohuang.common.message.CardInfo;
 import jfang.games.baohuang.domain.constant.Rank;
-import jfang.games.baohuang.domain.exception.CardNotFoundException;
+import jfang.games.baohuang.common.exception.CardNotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,10 +39,34 @@ public class PlayerCards {
     }
 
     public int countSeven() {
+        return countByRank(Rank.SEVEN);
+    }
+
+    public int countByRank(Rank rank) {
         int count = 0;
         for (Card card : cardList) {
-            if (card.getRank() == Rank.SEVEN) {
+            if (card.getRank() == rank) {
                 count++;
+            }
+        }
+        return count;
+    }
+
+    public int countJoker(Boolean isRed) {
+        int count = 0;
+        for (Card card : cardList) {
+            if (isRed == null) {
+                if (card.isRedJoker() || card.isBlackJoker()) {
+                    count++;
+                }
+            } else if (isRed) {
+                if (card.isRedJoker()) {
+                    count++;
+                }
+            } else {
+                if (card.isBlackJoker()) {
+                    count++;
+                }
             }
         }
         return count;
@@ -66,7 +90,7 @@ public class PlayerCards {
         if (index > 0) {
             this.cardList.remove(index);
         } else {
-            throw new CardNotFoundException(card);
+            throw new CardNotFoundException(card.toDisplayString());
         }
     }
 
