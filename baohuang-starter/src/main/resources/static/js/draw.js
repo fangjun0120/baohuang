@@ -30,11 +30,11 @@ function drawCards(region, cards, selectedSet, align) {
         let x = xStart + i * cardWidthDelta;
         let y = region.y + region.height * 0.5 - cardHeight * 0.5;
         if (selectedSet != null && selectedSet.has(i)) {
-            y = region.y;
+            y = region.y + 2;
         }
         context.drawPokerCard(x, y, cardHeight, cards[i].suit, cards[i].rank);
         if (cards[i].isAgent) {
-            context.strokeStyle('green');
+            context.strokeStyle = 'green';
             context.strokeRect(region.x, region.y, region.width, region.height);
         }
     }
@@ -48,15 +48,20 @@ function drawPortrait(region, image, name, isCurrent) {
     let img = new Image();
     img.onload = function() {
         context.drawImage(img, x, y, width, width);
+        context.textAlign = "center"
+        context.textBaseline = "middle"
+        context.font = Math.ceil(width * 0.25 * 0.8) + "px Arial";
+        context.strokeStyle = 'black';
+        context.fillText(name,
+            region.x + region.width * 0.5,
+            0.5 * (region.y + region.height + y + width),
+            region.width * 0.8);
+        if (isCurrent) {
+            context.strokeStyle = 'red';
+            context.strokeRect(region.x+2, region.y+2, region.width-4, region.height-4);
+        }
     }
     img.src = image;
-    let y2 = region.y + region.height * 0.5 + width * 0.5;
-    context.font = Math.floor(width * 0.25 * 0.8) + "px Arial";
-    context.fillText(name, x, y2);
-    if (isCurrent) {
-        context.strokeStyle('red');
-        context.strokeRect(region.x, region.y, region.width, region.height);
-    }
 }
 
 function drawCardBack(region) {
@@ -69,18 +74,28 @@ function drawCardBack(region) {
 function drawButton(cancelText, submitText) {
     let pass = getPassButtonRegion();
     clearRegion(pass);
-    context.strokeRect(pass.x, pass.y, pass.width, pass.height);
-    drawText(pass.x + pass.width * 0.5, pass.y + pass.height * 0.5, cancelText, pass.height * 0.8);
+    context.strokeRect(pass.x+2, pass.y+2, pass.width-4, pass.height-4);
+    drawText(pass.x + pass.width * 0.5,
+        pass.y + pass.height * 0.5,
+        cancelText,
+        pass.height * 0.5,
+        pass.width);
     let submit = getSubmitButtonRegion();
     clearRegion(submit);
-    context.strokeRect(submit.x, submit.y, submit.width, submit.height);
-    drawText(submit.x + submit.width * 0.5, submit.y + submit.height * 0.5, submitText, submit.height * 0.8);
+    context.strokeRect(submit.x+2, submit.y+2, submit.width-4, submit.height-4);
+    drawText(submit.x + submit.width * 0.5,
+        submit.y + submit.height * 0.5,
+        submitText,
+        submit.height * 0.5,
+        submit.width);
 }
 
-function drawText(centerX, centerY, text, size) {
+function drawText(centerX, centerY, text, size, maxWidth) {
     context.font = Math.floor(size) + "px Arial";
-    context.textAlign = "center";
-    context.fillText(text, centerX, centerY);
+    context.textAlign = "center"
+    context.textBaseline = "middle"
+    context.strokeStyle = 'black';
+    context.fillText(text, centerX, centerY, maxWidth);
 }
 
 function clearButton() {

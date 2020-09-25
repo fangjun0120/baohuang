@@ -28,6 +28,9 @@ public class UserDetailAdapter implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         String[] array = new String[user.getRoles().size()];
+        for (int i = 0; i < user.getRoles().size(); i++) {
+            array[i] = user.getRoles().get(i);
+        }
         return AuthorityUtils.createAuthorityList(array);
     }
 

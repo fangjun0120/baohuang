@@ -3,6 +3,8 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <link rel="stylesheet" th:href="@{/css/bootstrap-4.3.1.min.css}">
     <!-- https://tairraos.github.io/Poker.JS/#chinese-version-readme -->
     <title>welcome</title>
@@ -44,6 +46,7 @@
                 <br/>
                 <label for="to-message">Say</label><input type="text" id="to-message"/>
                 <button id="send-message" onclick="wsSendMessage();">Send</button>
+                <button id="left-room">Leave Room</button>
             </div>
         </div>
     </div>
@@ -52,7 +55,7 @@
         <input id="userId" type="hidden" th:value="${#authentication.principal.user.id}" />
     </div>
 
-    <script th:src="@{/js/jquery-3.3.1.slim.min.js}"></script>
+    <script th:src="@{/js/jquery-3.5.1.min.js}"></script>
     <script th:src="@{/js/popper-1.14.7.min.js}"></script>
     <script th:src="@{/js/bootstrap-4.3.1.min.js}"></script>
     <script th:src="@{/js/bootbox-5.4.0.min.js}"></script>
@@ -75,13 +78,17 @@
         let stompClient;
         let roomId;
         let userId;
+        let csrfToken;
+        let csrfHeader;
 
         window.onload = function() {
             roomId = $("#roomId").val()
             userId = $("#userId").val()
+            csrfToken = $("meta[name='_csrf']").attr("content")
+            csrfHeader = $("meta[name='_csrf_header']").attr("content")
             canvas = document.getElementById('my-canvas')
             canvas.width = $("#canvas").width()
-            canvas.height = document.documentElement.clientHeight;
+            canvas.height = document.documentElement.clientHeight
             context = canvas.getContext('2d')
             canvas.addEventListener('click', function(event) {
                 onClick(event);
@@ -121,6 +128,19 @@
             // drawCards(getButtonRightCardRegion(), subList, null, "right")
             // drawButton()
         }
+        $(document).ready(function() {
+            $("#left-room").click(function(event) {
+                let headers = {}
+                headers[csrfHeader] = csrfToken
+                $.ajax({
+                    method: "POST",
+                    url: "/room/" + roomId,
+                    headers: headers
+                }).done(function() {
+                    window.location = "/"
+                })
+            })
+        })
     </script>
 </body>
 </html>

@@ -42,6 +42,11 @@ public class GameController {
         messageRepo.broadcastRoom(id, msg);
     }
 
+    @MessageMapping("/init/{id}")
+    public void init(@DestinationVariable Long id, Principal principal) {
+        roomService.onPlayerJoin((SecurityUtil.getCurrentUser(principal)).getUser().getId());
+    }
+
     @MessageMapping("/system/{id}")
     public void systemMessage(@DestinationVariable Long id, String message) {
         MessageDTO messageDTO;
@@ -62,12 +67,12 @@ public class GameController {
 
     @EventListener
     public void onConnectionBuild(SessionConnectedEvent event) {
-        roomService.onPlayerJoin(SecurityUtil.getCurrentUser().getUser().getId());
+        //roomService.onPlayerJoin(SecurityUtil.getCurrentUser().getUser().getId());
     }
 
     @EventListener
     public void onConnectionDestroyed(SessionDisconnectEvent event) {
-        roomService.onPlayerLeft(SecurityUtil.getCurrentUser().getUser().getId());
+        roomService.onPlayerLeft(SecurityUtil.getEventUser(event).getUser().getId());
     }
 
     @EventListener

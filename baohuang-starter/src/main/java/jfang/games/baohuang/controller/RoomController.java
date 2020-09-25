@@ -4,9 +4,7 @@ import jfang.games.baohuang.service.RoomService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -21,10 +19,17 @@ public class RoomController {
     @Resource
     private RoomService roomService;
 
-    @GetMapping("/room/{id}")
+    @GetMapping("/{id}")
     public String room(@PathVariable Long id, Model model) {
         roomService.entryRoom(id);
         model.addAttribute("roomId", id);
         return "/room";
+    }
+
+    @ResponseBody
+    @PostMapping("/{id}")
+    public String leftRoom(@PathVariable Long id) {
+        roomService.leftRoom(id);
+        return "ok";
     }
 }

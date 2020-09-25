@@ -1,16 +1,21 @@
+function onConnect() {
+    wsSendSystemMessage(null, option)
+}
+
 function onSystemMessage(message) {
+    console.log(message)
     if (game == null) {
         game = new Game(message.gameId)
     }
     if (thisPlayer == null) {
-        let playerInfo = message.playerInfo.find(p => p.userId === userId)
+        let playerInfo = message.playerInfo.find(p => "" + p.userId === userId)
         let player = new Player(playerInfo)
         thisPlayer = player
         game.addPlayer(player)
     }
     game.sync(message)
     if (message.playerOptions) {
-        if (message.playOptions.data) {
+        if (message.playOptions.data && message.playerOptions.data != null) {
             bootbox.alert({
                 size: "small",
                 title: message.playerOptions.message,
@@ -20,7 +25,7 @@ function onSystemMessage(message) {
         } else {
             bootbox.confirm(message.playerOptions.message, function (result) {
                 let option = { "value": message.playerOptions.value, "response": result }
-                wsSendSystemMessage(null, option)
+                submit(null, option)
             })
         }
     }
@@ -33,7 +38,7 @@ function onClick(event) {
         onCardSelect(event.offsetX, event.offsetY, region);
         return;
     }
-    if (thisPlayer.state < 2 || thisPlayer.state === 3) {
+    if (thisPlayer != null && thisPlayer.state < 2 || thisPlayer.state === 3) {
         region = getPassButtonRegion();
         if (isInRegion(event.offsetX, event.offsetY, region)) {
             onClickPass();
@@ -71,8 +76,7 @@ function getIndex(x, y, region, cardList) {
 }
 
 function onCardSelect(x, y, region) {
-    let index = getIndex(x, y, region, cardList);
-    //console.log(index);
+    let index = getIndex(x, y, region, thisPlayer.cardList);
     if (index < 0) {
         return;
     }
@@ -82,10 +86,11 @@ function onCardSelect(x, y, region) {
         selected.add(index);
     }
     clearRegion(region);
-    drawCards(region, cardList, selected, "mid");
+    drawCards(region, thisPlayer.cardList, selected, "mid");
 }
 
 function onClickPass() {
+    console.log("on click submit")
     if (game.stage === 1) {
         let feedback = { "userId": userId, "ready": false }
         submit(feedback, null)
@@ -100,20 +105,10 @@ function onClickSubmit() {
         submit(feedback, null)
         return
     }
-    // let hand = [];
-    // let newCardList = [];
-    // for (let index = 0; index < cardList.length; index++) {
-    //     if (selected.has(index)) {
-    //         hand.push(cardList[index]);
-    //     } else {
-    //         newCardList.push(cardList[index]);
-    //     }
-    // }
-    // cardList = newCardList;
-    // let region = getDeckRegion();
-    // clearRegion(region);
-    // drawCards(region, cardList, selected, "mid");
-    // submit
+    let hand = [];
+    for (let index of selected) {
+        hand.push(thisPlayer.cardList[index])
+    }
     let feedback = { "userId": userId, "selectedCards": hand }
     submit(feedback, null)
     selected.clear();

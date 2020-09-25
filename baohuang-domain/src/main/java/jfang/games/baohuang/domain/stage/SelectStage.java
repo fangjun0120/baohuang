@@ -60,7 +60,7 @@ public class SelectStage implements GameStage {
             }
             player.getPlayerCards().addCards(donationCards);
             RepoUtil.messageRepo.broadcastRoom(game.getRoomId(),
-                    String.format(GuideMessage.SELECT_KING_DONE, player.getDisplayName(), card));
+                    String.format(GuideMessage.SELECT_KING_DONE, player.getDisplayName(), card.toDisplayString()));
             nextStage(game);
         } else {
             List<CardInfo> cardInfoList = messageDTO.getPlayerCallback().getSelectedCards();

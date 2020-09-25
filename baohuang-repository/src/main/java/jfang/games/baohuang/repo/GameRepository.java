@@ -8,6 +8,7 @@ import jfang.games.baohuang.po.GamePO;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 
 /**
  * @author jfang
@@ -20,6 +21,11 @@ public class GameRepository implements GameRepo {
 
     @Override
     public void createGame(Game game) {
+        LocalDateTime current = LocalDateTime.now();
+        if (game.getId() == null) {
+            game.setCreatedTime(current);
+        }
+        game.setUpdatedTime(current);
         GamePO gamePO = GameConverter.convertGameToPO(game);
         gamePO = gameDAO.save(gamePO);
         if (game.getId() == null) {

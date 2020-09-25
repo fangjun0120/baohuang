@@ -34,6 +34,17 @@ public class RoomService {
     }
 
     /**
+     * 用户离开房间
+     *
+     * @param id 房间id
+     */
+    public void leftRoom(Long id) {
+        UserDetailAdapter userDetailAdapter = SecurityUtil.getCurrentUser();
+        Room room = roomCache.getRoomById(id);
+        room.removePlayer(userDetailAdapter.getUser().getId());
+    }
+
+    /**
      * 玩家加入时加载玩家信息
      */
     public void onPlayerJoin(Long userId) {
@@ -68,5 +79,6 @@ public class RoomService {
             }
             room.getGame().updatePlayerInfo();
         }
+        room.getGame().getGameStage().onPlayerMessage(room.getGame(), message);
     }
 }

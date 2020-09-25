@@ -46,6 +46,9 @@ function getPortraitByIndex(index) {
 }
 
 function getRelativeIndex(index) {
+  if (thisPlayer == null) {
+    return 0
+  }
   let i = thisPlayer.index - index
   if (i > 2) {
     return i - 5

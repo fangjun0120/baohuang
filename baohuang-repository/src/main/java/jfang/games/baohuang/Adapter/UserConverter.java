@@ -1,5 +1,6 @@
 package jfang.games.baohuang.Adapter;
 
+import jfang.games.baohuang.common.util.DateUtil;
 import jfang.games.baohuang.domain.user.User;
 import jfang.games.baohuang.po.UserPO;
 
@@ -25,6 +26,8 @@ public class UserConverter {
             Collections.addAll(roles, tokens);
         }
         user.setRoles(roles);
+        user.setCreatedTime(DateUtil.longToLocalDateTime(userPO.getCreated()));
+        user.setUpdatedTime(DateUtil.longToLocalDateTime(userPO.getUpdated()));
         return user;
     }
 
@@ -35,6 +38,8 @@ public class UserConverter {
         userPO.setPassword(user.getPassword());
         userPO.setPortrait(user.getPortrait());
         userPO.setRoles(String.join(",", user.getRoles()));
+        userPO.setCreated(DateUtil.localDateTimeToLong(user.getCreatedTime()));
+        userPO.setUpdated(DateUtil.localDateTimeToLong(user.getUpdatedTime()));
         return userPO;
     }
 }

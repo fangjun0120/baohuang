@@ -46,39 +46,34 @@ public class Room extends BaseEntity {
             this.game = new Game(this.id, this.playerList);
             this.game.getGameStage().run(game);
         }
-        playerList.add(player);
-        player.setIndex(indexStack.pop());
-        RepoUtil.messageRepo.broadcastRoom(this.id, String.format(GuideMessage.JOIN_ROOM, player.getDisplayName()));
-        updateRoomInfo();
+        if (!this.game.hasPlayer(player.getUserId())) {
+            playerList.add(player);
+            player.setIndex(indexStack.pop());
+            RepoUtil.messageRepo.broadcastRoom(this.id, String.format(GuideMessage.JOIN_ROOM, player.getDisplayName()));
+        }
+        this.game.updatePlayerInfo();
     }
 
     public void removePlayer(Long userId) {
         Player player = this.playerList.stream()
                 .filter(p -> p.getUserId().equals(userId))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElse(null);
+        if (player == null) {
+            return;
+        }
         playerList.removeIf(p -> p.getUserId().equals(userId));
         indexStack.push(player.getIndex());
         RepoUtil.messageRepo.broadcastRoom(this.id, String.format(GuideMessage.LEFT_ROOM, player.getDisplayName()));
-        updateRoomInfo();
         if (this.playerList.size() == 0) {
             game = null;
+        } else {
+            this.game.updatePlayerInfo();
         }
     }
 
     public void resetGame() {
         this.game = new Game(this.id, this.playerList);
         this.game.getGameStage().run(game);
-    }
-
-    public void updateRoomInfo() {
-        for (Player player: this.playerList) {
-            MessageDTO messageDTO = new MessageDTO("server");
-            messageDTO.setGameId(this.game.getId());
-            messageDTO.setStage(GameStageEnum.INIT.getValue());
-            messageDTO.setPlayerInfo(new ArrayList<>());
-            messageDTO.getPlayerInfo().add(player.toPlayerInfo(false));
-            RepoUtil.messageRepo.systemMessage(player.getDisplayName(), messageDTO);
-        }
     }
 }

@@ -31,7 +31,8 @@ public class InitStage implements GameStage {
         Player player = game.getPlayerByUserId(userId);
         if (Boolean.TRUE.equals(messageDTO.getPlayerCallback().getReady())) {
             player.setStatus(PlayerStatus.READY);
-            if (game.getPlayers().stream().noneMatch(p -> p.getStatus() != PlayerStatus.READY)) {
+            if (game.getPlayers().size() == 5 &&
+                    game.getPlayers().stream().noneMatch(p -> p.getStatus() != PlayerStatus.READY)) {
                 game.setGameStage(new ShuffleStage());
                 game.getGameStage().run(game);
             }

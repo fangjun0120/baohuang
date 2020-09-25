@@ -50,7 +50,7 @@ public class ShuffleStage implements GameStage {
     public boolean dealCards(Game game) {
         List<Card> deck = buildDeck();
         Collections.shuffle(deck);
-        int size = (5 + 7 + 8 * 4 * 4) / 4;
+        int size = (5 + 7 + 8 * 4 * 4) / 5;
         int index = new Random().nextInt(5);
         boolean anyoneCanBeKing = false;
         for (int i = 0; i < 5; i++) {

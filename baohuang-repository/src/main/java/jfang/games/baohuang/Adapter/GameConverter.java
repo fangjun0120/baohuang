@@ -1,5 +1,6 @@
 package jfang.games.baohuang.Adapter;
 
+import jfang.games.baohuang.common.util.DateUtil;
 import jfang.games.baohuang.domain.entity.Game;
 import jfang.games.baohuang.po.GamePO;
 
@@ -9,13 +10,10 @@ import jfang.games.baohuang.po.GamePO;
 public class GameConverter {
 
     public static GamePO convertGameToPO(Game game) {
-        long timestamp = System.currentTimeMillis();
         GamePO gamePO = new GamePO();
         gamePO.setId(game.getId());
-        if (gamePO.getCreated() == null) {
-            gamePO.setCreated(timestamp);
-        }
-        gamePO.setUpdated(timestamp);
+        gamePO.setCreated(DateUtil.localDateTimeToLong(game.getCreatedTime()));
+        gamePO.setUpdated(DateUtil.localDateTimeToLong(game.getUpdatedTime()));
         return gamePO;
     }
 }

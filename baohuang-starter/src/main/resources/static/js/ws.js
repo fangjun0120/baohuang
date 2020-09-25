@@ -4,18 +4,17 @@ function wsConnect() {
     // headers, connectCallback, errorCallback
     stompClient.connect({}, function() {
         wsSubscribe('/topic/player/' + roomId, function(response) {
-            console.log("received message " + response);
             showResponse(response.body);
         }, {});
-        wsSubscribe('/user/message', function(response) {
+        wsSubscribe('/user/queue/message', function(response) {
             console.log("user message " + response);
             showResponse(response.body);
         }, {});
-        wsSubscribe('/user/system', function(response) {
-            console.log("system message " + response);
+        wsSubscribe('/user/queue/system', function(response) {
             let body = JSON.parse(response.body)
             onSystemMessage(body)
         }, {});
+        wsInit();
     }, function(error) {
         console.log("connect error: " + error);
     });
@@ -42,6 +41,10 @@ function wsSubscribe(topic, callback, headers) {
 function wsSendMessage() {
     let message = $('#to-message').val();
     send("/app/chat/" + roomId, {}, message);
+}
+
+function wsInit() {
+    send("/app/init/" + roomId, {}, null);
 }
 
 function wsSendSystemMessage(message) {

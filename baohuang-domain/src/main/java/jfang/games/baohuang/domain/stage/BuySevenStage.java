@@ -105,6 +105,8 @@ public class BuySevenStage implements GameStage {
             sevenConsumer.add(player.getIndex());
         }
         remainCount--;
+        player.setStatus(PlayerStatus.WAITING);
+        game.updatePlayerInfo(player.getIndex(), null);
 
         // 补齐
         if (remainCount == 0) {
@@ -117,12 +119,10 @@ public class BuySevenStage implements GameStage {
                     RepoUtil.messageRepo.broadcastRoom(game.getRoomId(),
                             String.format(GuideMessage.BUY_SEVEN_OFFER, p.getDisplayName(), card.toDisplayString()));
                 }
-                p.setStatus(PlayerStatus.WAITING);
             });
             sevenConsumer.forEach(i -> {
                 Player p = game.getPlayers().get(i);
                 p.getPlayerCards().addCards(Collections.singletonList(sevenStack.pop()));
-                p.setStatus(PlayerStatus.WAITING);
             });
             nextStage(game);
         }

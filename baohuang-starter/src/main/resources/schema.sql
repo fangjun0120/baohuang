@@ -10,7 +10,7 @@ CREATE TABLE `user` (
                         `created_time` bigint DEFAULT NULL,
                         `updated_time` bigint DEFAULT NULL,
                         `username` varchar(45) DEFAULT NULL,
-                        `password` varchar(45) DEFAULT NULL,
+                        `password` varchar(100) DEFAULT NULL,
                         `portrait` varchar(200) DEFAULT NULL,
                         `roles` varchar(45) DEFAULT NULL,
                         PRIMARY KEY (`id`),

@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 
 /**
  * @author jfang
@@ -33,6 +34,11 @@ public class UserRepository implements UserRepo {
 
     @Override
     public void save(User user) {
+        LocalDateTime current = LocalDateTime.now();
+        if (user.getId() == null) {
+            user.setCreatedTime(current);
+        }
+        user.setUpdatedTime(current);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userDAO.save(UserConverter.convertUser(user));
     }

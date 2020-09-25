@@ -4,6 +4,7 @@ import jfang.games.baohuang.common.message.CardInfo;
 import jfang.games.baohuang.domain.constant.Rank;
 import jfang.games.baohuang.common.exception.CardNotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,7 +18,8 @@ public class PlayerCards {
     private final List<Card> cardList;
 
     public PlayerCards(List<Card> cardList) {
-        this.cardList = cardList;
+        this.cardList = new ArrayList<>();
+        this.cardList.addAll(cardList);
         this.cardList.sort(Card.SUIT_SENSITIVE_COMPARATOR);
     }
 
@@ -87,7 +89,7 @@ public class PlayerCards {
 
     public void popCard(Card card) {
         int index = this.cardList.indexOf(card);
-        if (index > 0) {
+        if (index > -1) {
             this.cardList.remove(index);
         } else {
             throw new CardNotFoundException(card.toDisplayString());

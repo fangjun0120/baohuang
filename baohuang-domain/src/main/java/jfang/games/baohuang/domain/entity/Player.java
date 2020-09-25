@@ -52,13 +52,13 @@ public class Player {
         playerInfo.setState(this.status.getValue());
         playerInfo.setIsKing(this.isKing);
         playerInfo.setHasRevolution(this.hasRevolution);
-        if (includeCard) {
-            playerInfo.setCardList(playerCards.toCardInfo());
+        if (includeCard && this.playerCards != null) {
+            playerInfo.setCardList(this.playerCards.toCardInfo());
         }
-        if (playerAction != null) {
-            playerInfo.setPass(playerAction.getPass());
-            if (playerAction.getLastHand() != null) {
-                playerInfo.setLastHand(playerAction.getLastHand().toCardInfoList());
+        if (this.playerAction != null) {
+            playerInfo.setPass(this.playerAction.getPass());
+            if (this.playerAction.getLastHand() != null) {
+                playerInfo.setLastHand(this.playerAction.getLastHand().toCardInfoList());
             }
         }
         return playerInfo;

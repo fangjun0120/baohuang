@@ -100,7 +100,7 @@ public class Card {
         Suit suit = Suit.of(cardInfo.getSuit());
         Rank rank = Rank.of(cardInfo.getRank());
         Card card = new Card(suit, rank);
-        if (cardInfo.getAgent()) {
+        if (Boolean.TRUE.equals(cardInfo.getAgent())) {
             card.setAgentCard(true);
         }
         return card;

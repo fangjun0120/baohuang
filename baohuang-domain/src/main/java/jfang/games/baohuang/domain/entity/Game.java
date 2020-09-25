@@ -1,5 +1,6 @@
 package jfang.games.baohuang.domain.entity;
 
+import jfang.games.baohuang.common.exception.PlayerNotFoundException;
 import jfang.games.baohuang.common.message.MessageDTO;
 import jfang.games.baohuang.common.message.PlayerOptions;
 import jfang.games.baohuang.domain.BaseEntity;
@@ -92,10 +93,20 @@ public class Game extends BaseEntity {
         RepoUtil.gameRepo.createGame(this);
     }
 
+    public boolean hasPlayer(Long userId) {
+        return this.players.stream().anyMatch(p -> p.getUserId().equals(userId));
+    }
+
     public Player getPlayerByUserId(Long userId) {
         return this.players.stream()
                 .filter(p -> p.getUserId().equals(userId))
                 .findFirst().orElseThrow(RuntimeException::new);
+    }
+
+    public Player getPlayerByIndex(int index) {
+        return this.players.stream()
+                .filter(p -> p.getIndex() == index)
+                .findFirst().orElseThrow(() -> new PlayerNotFoundException(index));
     }
 
     public int nextPlayer() {
@@ -133,14 +144,15 @@ public class Game extends BaseEntity {
     }
 
     public void updatePlayerInfo() {
-        for (int i = 0; i < this.players.size(); i++) {
-            updatePlayerInfo(i, null);
+        for (Player player : this.players) {
+            updatePlayerInfo(player.getIndex(), null);
         }
     }
 
     public void updatePlayerInfo(int index, PlayerOptions playerOptions) {
-        Player player = this.getPlayers().get(index);
+        Player player = getPlayerByIndex(index);
         MessageDTO messageDTO = new MessageDTO("server");
+        messageDTO.setGameId(this.id);
         messageDTO.setStage(this.gameStage.getValue());
         messageDTO.setCurrentPlayer(this.currentPlayer);
         messageDTO.setIsOneOverFour(this.isKingOverFourPublic);

@@ -17,11 +17,21 @@ class Game {
         this.isRevolution = message.isRevolution
         this.currentPlayer = message.currentPlayer
         if (message.playerInfo) {
+            let updateSet = new Set()
             for (const player of message.playerInfo) {
                 if (!this.players.has(player.index)) {
                     this.players.set(player.index, new Player(player))
+                } else {
+                    this.players.get(player.index).sync(player)
+                    updateSet.add(player.index)
                 }
-                this.players.get(player.index).sync(player)
+            }
+            // 不在说明退出了
+            for (const pi of this.players.keys()) {
+                if (!updateSet.has(pi)) {
+                    this.players.get(pi).clear()
+                    this.players.delete(pi)
+                }
             }
         }
         if (message.playerOptions) {
@@ -45,7 +55,7 @@ class Player {
         this.username = playerInfo.username
         this.portrait = playerInfo.portrait
         this.index = playerInfo.index
-        drawPortrait(getPortraitByIndex(this.index), this.portrait, this.username, false)
+        drawPortrait(getPortraitByIndex(playerInfo.index), playerInfo.portrait, playerInfo.username, false)
     }
 
     sync(playerInfo) {
@@ -62,10 +72,17 @@ class Player {
         if (this.lastHand) {
             drawCards(getCardRegionByIndex(playerInfo.index), this.cardList, selected, "mid");
         }
-        if (this.state < 2 || this.state === 3) {
-            drawButton("取消", "确定")
+        if (this.state === 0 || this.state === 1) {
+            drawButton("Cancel", "Ready")
+        } else if (this.state === 3) {
+            drawButton("Cancel", "Submit")
         } else {
             clearButton()
         }
+    }
+
+    clear() {
+        clearRegion(getPortraitByIndex(this.index))
+        clearRegion(getCardRegionByIndex(this.index))
     }
 }
