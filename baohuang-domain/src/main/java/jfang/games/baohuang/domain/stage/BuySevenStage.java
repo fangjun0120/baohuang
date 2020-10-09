@@ -1,6 +1,5 @@
 package jfang.games.baohuang.domain.stage;
 
-import com.google.common.base.Preconditions;
 import jfang.games.baohuang.common.message.MessageDTO;
 import jfang.games.baohuang.common.util.CheckUtil;
 import jfang.games.baohuang.domain.constant.GameStageEnum;
@@ -14,10 +13,7 @@ import jfang.games.baohuang.domain.entity.Player;
 import jfang.games.baohuang.domain.repo.RepoUtil;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * 买 7
@@ -31,8 +27,8 @@ public class BuySevenStage implements GameStage {
 
     private final Stack<Card> sevenStack = new Stack<>();
     private final Stack<Card> otherStack = new Stack<>();
-    private final List<Integer> sevenConsumer = new ArrayList<>();
-    private final List<Integer> sevenProducer = new ArrayList<>();
+    private final List<Integer> sevenBuyers = new ArrayList<>();
+    private final Map<Integer, Integer> sevenSellers = new HashMap<>();
 
     @Override
     public void run(Game game) {
@@ -91,7 +87,7 @@ public class BuySevenStage implements GameStage {
         if (selected.getCards().size() > 0 &&
                 selected.getCards().get(0).getRank() == Rank.SEVEN) {
             selected.getCards().forEach(sevenStack::push);
-            sevenProducer.add(player.getIndex());
+            sevenSellers.put(player.getIndex(), selected.getCards().size());
         } else {
             if (selected.getCards().size() > 0) {
                 Card card = selected.getCards().get(0);
@@ -102,7 +98,7 @@ public class BuySevenStage implements GameStage {
                 RepoUtil.messageRepo.broadcastRoom(game.getRoomId(),
                         String.format(GuideMessage.BUY_SEVEN_FREE, player.getDisplayName()));
             }
-            sevenConsumer.add(player.getIndex());
+            sevenBuyers.add(player.getIndex());
         }
         remainCount--;
         player.setStatus(PlayerStatus.WAITING);
@@ -110,17 +106,21 @@ public class BuySevenStage implements GameStage {
 
         // 补齐
         if (remainCount == 0) {
-            sevenProducer.forEach(i -> {
+            sevenSellers.keySet().forEach(i -> {
                 Player p = game.getPlayers().get(i);
                 // 有人买不起的时候就拿不到牌
                 if (!otherStack.empty()) {
-                    Card card = otherStack.pop();
-                    p.getPlayerCards().addCards(Collections.singletonList(card));
+                    StringBuilder s = new StringBuilder();
+                    for (int j = 0; j < sevenSellers.get(i); j++) {
+                        Card card = otherStack.pop();
+                        p.getPlayerCards().addCards(Collections.singletonList(card));
+                        s.append(card.toDisplayString());
+                    }
                     RepoUtil.messageRepo.broadcastRoom(game.getRoomId(),
-                            String.format(GuideMessage.BUY_SEVEN_OFFER, p.getDisplayName(), card.toDisplayString()));
+                            String.format(GuideMessage.BUY_SEVEN_OFFER, p.getDisplayName(), s.toString()));
                 }
             });
-            sevenConsumer.forEach(i -> {
+            sevenBuyers.forEach(i -> {
                 Player p = game.getPlayers().get(i);
                 p.getPlayerCards().addCards(Collections.singletonList(sevenStack.pop()));
             });

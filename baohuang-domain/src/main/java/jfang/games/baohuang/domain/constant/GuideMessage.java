@@ -20,7 +20,7 @@ public class GuideMessage {
     public static final String SELECT_KING_START = "[系统] 玩家 %s 开始选保镖牌";
     public static final String SELECT_KING_DONE = "[系统] 玩家 %s 当选主公，保镖牌是 %s";
     public static final String SELECT_KING_PASS_FREE = "[系统] 玩家 %s 当不了主公，贡不起";
-    public static final String SELECT_KING_PASS = "[系统] 玩家 %s 当不了主公，贡 %";
+    public static final String SELECT_KING_PASS = "[系统] 玩家 %s 当不了主公，贡 %s";
     public static final String REVOLUTION = "[系统] 请选择起义或者明牌1打4";
     public static final String REVOLUTION_KING = "[系统] 玩家 %s 选择明牌1打4";
     public static final String REVOLUTION_OTHER = "[系统] 玩家 %s 选择起义";

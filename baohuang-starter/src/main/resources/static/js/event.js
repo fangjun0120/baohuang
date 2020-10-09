@@ -15,7 +15,7 @@ function onSystemMessage(message) {
     }
     game.sync(message)
     if (message.playerOptions) {
-        if (message.playOptions.data && message.playerOptions.data != null) {
+        if (message.playerOptions.data) {
             bootbox.alert({
                 size: "small",
                 title: message.playerOptions.message,

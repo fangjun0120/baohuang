@@ -22,11 +22,13 @@ public class UserRepositoryTest {
 
     @Test
     public void testCreateUser() {
-        User user = new User();
-        user.setUsername("test5");
-        user.setPassword("123456");
-        user.setPortrait("/images/portrait0.jpg");
-        user.setRoles(Collections.singletonList("ROLE_user"));
-        userRepository.save(user);
+        for (int i = 0; i < 5; i++) {
+            User user = new User();
+            user.setUsername("test" + i);
+            user.setPassword("123456");
+            user.setPortrait("/images/portrait0.jpg");
+            user.setRoles(Collections.singletonList("ROLE_user"));
+            userRepository.save(user);
+        }
     }
 }
