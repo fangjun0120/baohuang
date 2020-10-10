@@ -46,12 +46,10 @@ public class RunningStage implements GameStage {
             }
         } else {
             Hand hand = Hand.of(messageDTO.getPlayerCallback().getSelectedCards());
-            hand.parse(game.getAgentCard());
             // 不是发牌的时候，比较上一手牌
             if (game.getCurrentLeader() != null) {
                 Player currentLeader = game.getPlayers().get(game.getCurrentLeader());
                 Hand lastHand = currentLeader.getPlayerAction().getLastHand();
-                lastHand.parse(game.getAgentCard());
                 if (!hand.isDominateThan(lastHand)) {
                     throw new IllegalArgumentException();
                 } else if (currentLeader.isDead()) {

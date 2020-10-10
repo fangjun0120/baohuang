@@ -29,6 +29,7 @@ public class Hand {
     public Hand(List<Card> cards) {
         Preconditions.checkArgument(cards != null && cards.size() > 0, "card list cant be null");
         this.cards = cards;
+        parse();
     }
 
     protected List<Card> cards;
@@ -85,20 +86,19 @@ public class Hand {
     /**
      * 解析成保皇手牌
      *
-     * @param agentCard 保镖牌
      */
-    public void parse(Card agentCard) {
+    private void parse() {
         List<Card> cards = getCards();
         Set<Integer> set = cards.stream()
-                .filter(card -> !card.equals(agentCard))
+                .filter(card -> !card.isAgentCard())
                 .filter(card -> card.getRank() != null)
                 .map(card -> card.getRank().getValue())
                 .collect(Collectors.toSet());
-        set.remove(2);
+        set.remove(Rank.TWO.getValue());
         Preconditions.checkArgument(set.size() < 2, "invalid BaoHuang Hand");
         this.dimension = cards.size();
         for (Card card: cards) {
-            if (card.equals(agentCard)) {
+            if (card.isAgentCard()) {
                 this.hasAgent = true;
             } else if (card.isRedJoker()) {
                 this.redJokerNum++;
@@ -116,21 +116,30 @@ public class Hand {
      *
      * @param base 另一手牌
      * @return 是否大于
+     * @throws IllegalArgumentException 不能比较的时候抛异常
      */
     public boolean isDominateThan(Hand base) {
         Preconditions.checkArgument(base != null && base.dimension > 0, "base Baohuang Hand is invalid");
         Preconditions.checkArgument(this.dimension > 0, "parse first");
 
-        List<Integer> thisValueList = toValueList(isJoker2Over1(base));
-        List<Integer> baseValueList = toValueList(base.isJoker2Over1(this));
+        List<Integer> thisValueList = this.toValueList(this.isJoker2Over1(base));
+        List<Integer> baseValueList = base.toValueList(base.isJoker2Over1(this));
 
         Preconditions.checkArgument(thisValueList.size() == baseValueList.size(), "dimension invalid");
+        Boolean dominate = null;
         for (int i = 0; i < thisValueList.size(); i++) {
-            if (thisValueList.get(i) <= baseValueList.get(i)) {
-                return false;
+            if (thisValueList.get(i).equals(baseValueList.get(i))) {
+                throw new IllegalArgumentException("value must not be equal");
+            }
+            if (dominate == null) {
+                dominate = thisValueList.get(i) > baseValueList.get(i);
+            } else if (dominate && thisValueList.get(i) < baseValueList.get(i)) {
+                throw new IllegalArgumentException("value invalid");
+            } else if (!dominate && thisValueList.get(i) > baseValueList.get(i)) {
+                throw new IllegalArgumentException("value invalid");
             }
         }
-        return true;
+        return dominate;
     }
 
     /**

@@ -140,6 +140,7 @@ public class Card {
         return "Card{" +
                 "redJoker=" + redJoker +
                 ", blackJoker=" + blackJoker +
+                ", isAgentCard=" + isAgentCard +
                 ", suit=" + suit +
                 ", rank=" + rank +
                 '}';
