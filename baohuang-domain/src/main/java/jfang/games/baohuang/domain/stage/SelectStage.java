@@ -50,11 +50,14 @@ public class SelectStage implements GameStage {
                 player.getPlayerCards().getCard(card).setAgentCard(true);
             } else {
                 for (Player p: game.getPlayers()) {
-                    Card c = p.getPlayerCards().getCard(card);
-                    if (c != null) {
-                        game.setAgent(player.getIndex());
-                        c.setAgentCard(true);
-                        break;
+                    // 不能是自己
+                    if (!p.getIndex().equals(player.getIndex())) {
+                        Card c = p.getPlayerCards().getCard(card);
+                        if (c != null) {
+                            game.setAgent(player.getIndex());
+                            c.setAgentCard(true);
+                            break;
+                        }
                     }
                 }
             }

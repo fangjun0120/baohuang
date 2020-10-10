@@ -18,8 +18,7 @@ public class PlayerCards {
     private final List<Card> cardList;
 
     public PlayerCards(List<Card> cardList) {
-        this.cardList = new ArrayList<>();
-        this.cardList.addAll(cardList);
+        this.cardList = cardList;
         this.cardList.sort(Card.SUIT_SENSITIVE_COMPARATOR);
     }
 

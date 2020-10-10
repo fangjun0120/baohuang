@@ -107,21 +107,19 @@ public class BuySevenStage implements GameStage {
         // 补齐
         if (remainCount == 0) {
             sevenSellers.keySet().forEach(i -> {
-                Player p = game.getPlayers().get(i);
+                Player p = game.getPlayerByIndex(i);
                 // 有人买不起的时候就拿不到牌
-                if (!otherStack.empty()) {
-                    StringBuilder s = new StringBuilder();
-                    for (int j = 0; j < sevenSellers.get(i); j++) {
+                for (int j = 0; j < sevenSellers.get(i); j++) {
+                    if (!otherStack.empty()) {
                         Card card = otherStack.pop();
                         p.getPlayerCards().addCards(Collections.singletonList(card));
-                        s.append(card.toDisplayString());
+                        RepoUtil.messageRepo.broadcastRoom(game.getRoomId(),
+                                String.format(GuideMessage.BUY_SEVEN_OFFER, p.getDisplayName(), card.toDisplayString()));
                     }
-                    RepoUtil.messageRepo.broadcastRoom(game.getRoomId(),
-                            String.format(GuideMessage.BUY_SEVEN_OFFER, p.getDisplayName(), s.toString()));
                 }
             });
             sevenBuyers.forEach(i -> {
-                Player p = game.getPlayers().get(i);
+                Player p = game.getPlayerByIndex(i);
                 p.getPlayerCards().addCards(Collections.singletonList(sevenStack.pop()));
             });
             nextStage(game);

@@ -49,6 +49,14 @@ public class Card {
      */
     private Rank rank;
 
+    public Card(Card card) {
+        this.redJoker = card.redJoker;
+        this.blackJoker = card.blackJoker;
+        this.isAgentCard = card.isAgentCard;
+        this.suit = card.suit;
+        this.rank = card.rank;
+    }
+
     public Card(Suit suit, Rank rank) {
         this.suit = suit;
         this.rank = rank;

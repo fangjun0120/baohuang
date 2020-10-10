@@ -52,9 +52,10 @@ public class ShuffleStage implements GameStage {
         Collections.shuffle(deck);
         int size = (5 + 7 + 8 * 4 * 4) / 5;
         int index = new Random().nextInt(5);
-        boolean anyoneCanBeKing = false;
+        boolean someoneCanBeKing = false;
         for (int i = 0; i < 5; i++) {
-            List<Card> playerCard = deck.subList(i * size, (i+1) * size);
+            List<Card> subList = deck.subList(i * size, (i+1) * size);
+            List<Card> playerCard = new ArrayList<>(subList);
             if (index == i) {
                 game.setCurrentPlayer(i);
                 playerCard.add(Card.RED_JOKER);
@@ -62,10 +63,10 @@ public class ShuffleStage implements GameStage {
             PlayerCards playerCards = new PlayerCards(playerCard);
             game.getPlayers().get(i).setPlayerCards(playerCards);
             if (playerCards.canBeKing()) {
-                anyoneCanBeKing = true;
+                someoneCanBeKing = true;
             }
         }
-        return anyoneCanBeKing;
+        return someoneCanBeKing;
     }
 
     /**
@@ -95,7 +96,7 @@ public class ShuffleStage implements GameStage {
 
     private void addCard(List<Card> deck, Card card, int num) {
         for (int i = 0; i < num; i++) {
-            deck.add(card);
+            deck.add(new Card(card));
         }
     }
 }
