@@ -25,7 +25,8 @@ function onSystemMessage(message) {
         } else {
             bootbox.confirm(message.playerOptions.message, function (result) {
                 let option = { "value": message.playerOptions.value, "response": result }
-                submit(null, option)
+                let feedback = { "userId": userId }
+                submit(feedback, option)
             })
         }
     }
@@ -93,6 +94,11 @@ function onClickPass() {
     console.log("on click submit")
     if (game.stage === 1) {
         let feedback = { "userId": userId, "ready": false }
+        submit(feedback, null)
+        return
+    }
+    if (game.stage === 6) {
+        let feedback = { "userId": userId, "pass": true }
         submit(feedback, null)
         return
     }

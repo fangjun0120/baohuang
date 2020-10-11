@@ -20,23 +20,26 @@ public class RevolutionStage implements GameStage {
     @Override
     public void run(Game game) {
         for (Player player: game.getPlayers()) {
-            if (game.getKing().equals(player.getIndex())) {
+            if (player.getIndex().equals(game.getKing())) {
                 if (game.isKingOverFour()) {
                     player.setStatus(PlayerStatus.PLAYING);
+                    RepoUtil.messageRepo.broadcastRoom(game.getRoomId(), GuideMessage.REVOLUTION);
                     game.updatePlayerInfo(player.getIndex(), PlayerOptions.of(PlayerOptionEnum.ONE_OVER_FOUR, null));
                 } else {
                     player.setStatus(PlayerStatus.WAITING);
+                    RepoUtil.messageRepo.sendMessage(player.getDisplayName(), GuideMessage.REVOLUTION_WAIT);
                     game.updatePlayerInfo(player.getIndex(), null);
                 }
-            } else if (game.getAgent().equals(player.getIndex())) {
+            } else if (player.getIndex().equals(game.getAgent())) {
                 player.setStatus(PlayerStatus.WAITING);
+                RepoUtil.messageRepo.sendMessage(player.getDisplayName(), GuideMessage.REVOLUTION_WAIT);
                 game.updatePlayerInfo(player.getIndex(), null);
             } else {
                 player.setStatus(PlayerStatus.PLAYING);
+                RepoUtil.messageRepo.sendMessage(player.getDisplayName(), GuideMessage.REVOLUTION);
                 game.updatePlayerInfo(player.getIndex(), PlayerOptions.of(PlayerOptionEnum.REVOLUTION, null));
             }
         }
-        RepoUtil.messageRepo.broadcastRoom(game.getRoomId(), GuideMessage.REVOLUTION);
     }
 
     @Override
@@ -47,22 +50,21 @@ public class RevolutionStage implements GameStage {
         if (player.getIndex().equals(game.getKing())) {
             if (Boolean.TRUE.equals(messageDTO.getPlayerOptionResponse().getResponse())) {
                 game.setKingOverFourPublic(true);
-                game.updatePlayerInfo();
                 RepoUtil.messageRepo.broadcastRoom(game.getRoomId(),
                         String.format(GuideMessage.REVOLUTION_KING, player.getDisplayName()));
             }
         } else {
             if (Boolean.TRUE.equals(messageDTO.getPlayerOptionResponse().getResponse())) {
                 player.setHasRevolution(true);
-                game.updatePlayerInfo();
                 RepoUtil.messageRepo.broadcastRoom(game.getRoomId(),
                         String.format(GuideMessage.REVOLUTION_OTHER, player.getDisplayName()));
             }
         }
+        game.updatePlayerInfo(player.getIndex(), null);
         if (game.getPlayers().stream().noneMatch(p -> p.getStatus() == PlayerStatus.PLAYING)) {
             if (game.getPlayers().stream()
                     .filter(p -> !p.getIndex().equals(game.getKing()) && !p.getIndex().equals(game.getAgent()))
-                    .noneMatch(p -> Boolean.FALSE.equals(p.getHasRevolution()))) {
+                    .allMatch(p -> Boolean.TRUE.equals(p.getHasRevolution()))) {
                 game.setHasRevolution(true);
             }
             nextStage(game);

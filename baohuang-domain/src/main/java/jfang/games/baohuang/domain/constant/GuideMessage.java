@@ -24,5 +24,11 @@ public class GuideMessage {
     public static final String REVOLUTION = "[系统] 请选择起义或者明牌1打4";
     public static final String REVOLUTION_KING = "[系统] 玩家 %s 选择明牌1打4";
     public static final String REVOLUTION_OTHER = "[系统] 玩家 %s 选择起义";
-    public static final String RUNNING = "[系统] 游戏开始";
+    public static final String REVOLUTION_WAIT = "[系统] 等待其他玩家选择是否起义";
+    public static final String RUNNING = "[系统] 游戏开始 %s";
+    public static final String RUNNING_NO_REVOLUTION = "没有起义";
+    public static final String RUNNING_REVOLUTION = "起义";
+    public static final String RUNNING_ONE_OVER_FOUR = "名牌一打四";
+    public static final String RUNNING_OVER = "[系统] 玩家 %s 已完成，名次是 %s";
+    public static final String ENDING = "[系统] 游戏结束";
 }

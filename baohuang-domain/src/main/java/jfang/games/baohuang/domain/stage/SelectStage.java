@@ -26,7 +26,7 @@ public class SelectStage implements GameStage {
 
     @Override
     public void run(Game game) {
-        Player current = game.getPlayers().get(game.getCurrentPlayer());
+        Player current = game.getPlayerByIndex(game.getCurrentPlayer());
         current.setStatus(PlayerStatus.PLAYING);
         game.updatePlayerInfo();
         RepoUtil.messageRepo.broadcastRoom(game.getRoomId(),
@@ -49,13 +49,15 @@ public class SelectStage implements GameStage {
                 game.setKingOverFour(true);
                 player.getPlayerCards().getCard(card).setAgentCard(true);
             } else {
+                Card sample = new Card(card.getSuit(), card.getRank());
                 for (Player p: game.getPlayers()) {
                     // 不能是自己
                     if (!p.getIndex().equals(player.getIndex())) {
-                        Card c = p.getPlayerCards().getCard(card);
+                        Card c = p.getPlayerCards().getCard(sample);
                         if (c != null) {
-                            game.setAgent(player.getIndex());
+                            game.setAgent(p.getIndex());
                             c.setAgentCard(true);
+                            p.getPlayerCards().sort();
                             break;
                         }
                     }
@@ -67,7 +69,7 @@ public class SelectStage implements GameStage {
             nextStage(game);
         } else {
             List<CardInfo> cardInfoList = messageDTO.getPlayerCallback().getSelectedCards();
-            if (player.getPlayerCards().countByRank(Rank.TWO) == 0 || player.getPlayerCards().countJoker(null) == 0) {
+            if (player.getPlayerCards().countByRank(Rank.TWO) == 0 && player.getPlayerCards().countJoker(null) == 0) {
                 CheckUtil.checkHand(cardInfoList.size() == 0, "应该不用选择");
                 RepoUtil.messageRepo.broadcastRoom(game.getRoomId(),
                         String.format(GuideMessage.SELECT_KING_PASS_FREE, player.getDisplayName()));
@@ -77,21 +79,21 @@ public class SelectStage implements GameStage {
                 if (donationCards.size() == 0) {
                     CheckUtil.checkHand(card.isRedJoker(), "应该是大王");
                 } else if (player.getPlayerCards().countByRank(Rank.TWO) > 0) {
-                    CheckUtil.checkHand(card.isRedJoker(), "应该是2");
+                    CheckUtil.checkHand(card.getRank() == Rank.TWO, "应该是2");
                 } else if (player.getPlayerCards().countJoker(false) > 0) {
-                    CheckUtil.checkHand(card.isRedJoker(), "应该是小王");
+                    CheckUtil.checkHand(card.isBlackJoker(), "应该是小王");
                 } else if (player.getPlayerCards().countJoker(true) > 0) {
                     CheckUtil.checkHand(card.isRedJoker(), "应该是大王");
                 }
                 donationCards.add(card);
                 player.getPlayerCards().popCard(card);
                 RepoUtil.messageRepo.broadcastRoom(game.getRoomId(),
-                        String.format(GuideMessage.SELECT_KING_PASS, player.getDisplayName(), card));
+                        String.format(GuideMessage.SELECT_KING_PASS, player.getDisplayName(), card.toDisplayString()));
             }
             player.setStatus(PlayerStatus.WAITING);
             int index = game.nextPlayer();
             game.setCurrentPlayer(index);
-            game.getPlayers().get(index).setStatus(PlayerStatus.PLAYING);
+            game.getPlayerByIndex(index).setStatus(PlayerStatus.PLAYING);
             game.updatePlayerInfo();
         }
     }

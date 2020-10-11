@@ -57,7 +57,7 @@ public class ShuffleStage implements GameStage {
             List<Card> subList = deck.subList(i * size, (i+1) * size);
             List<Card> playerCard = new ArrayList<>(subList);
             if (index == i) {
-                game.setCurrentPlayer(i);
+                game.setCurrentPlayer(game.getPlayers().get(i).getIndex());
                 playerCard.add(Card.RED_JOKER);
             }
             PlayerCards playerCards = new PlayerCards(playerCard);

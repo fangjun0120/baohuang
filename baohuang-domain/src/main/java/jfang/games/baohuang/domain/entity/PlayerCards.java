@@ -73,6 +73,10 @@ public class PlayerCards {
         return count;
     }
 
+    public void sort() {
+        this.cardList.sort(Card.SUIT_SENSITIVE_COMPARATOR);
+    }
+
     public void addCards(List<Card> cardList) {
         this.cardList.addAll(cardList);
         this.cardList.sort(Card.SUIT_SENSITIVE_COMPARATOR);

@@ -26,8 +26,10 @@ public class Game extends BaseEntity {
     private static final long serialVersionUID = 3142574777412945362L;
 
     private Long roomId;
+
     /**
-     * 所有玩家
+     * 所有玩家，引用自Room.playerList
+     * 顺序没有意义，位置要看Player.index
      */
     private List<Player> players = new ArrayList<>(5);
 
@@ -109,13 +111,22 @@ public class Game extends BaseEntity {
                 .findFirst().orElseThrow(() -> new PlayerNotFoundException(index));
     }
 
+    /**
+     * @return 非主公、非保镖
+     */
+    public List<Player> getNormalPlayers() {
+        return this.getPlayers().stream()
+                .filter(p -> !p.getIndex().equals(this.king) && !p.getIndex().equals(this.agent))
+                .collect(Collectors.toList());
+    }
+
     public int nextPlayer() {
         int index = this.currentPlayer + 1;
         while (index != this.currentPlayer) {
             if (index > 4) {
                 index = 0;
             }
-            Player player = players.get(index);
+            Player player = getPlayerByIndex(index);
             if (player.getStatus() == PlayerStatus.WAITING) {
                 this.currentPlayer = index;
                 break;
@@ -127,20 +138,32 @@ public class Game extends BaseEntity {
 
     public void addCompletedPlayer(int index, boolean isDead) {
         if (isDead) {
-            this.players.get(index).setRank(this.reverseRankIndex--);
+            getPlayerByIndex(index).setRank(this.reverseRankIndex--);
         } else {
-            this.players.get(index).setRank(this.rankIndex++);
+            getPlayerByIndex(index).setRank(this.rankIndex++);
         }
     }
 
-    public boolean isCompleted() {
+    public void clearLastRound() {
+        for (Player player: this.players) {
+            if (player.getPlayerAction() != null) {
+                player.getPlayerAction().setPass(null);
+                player.getPlayerAction().setLastHand(null);
+            }
+        }
+    }
+
+    public boolean checkCompleted() {
         if (this.isKingOverFourPublic) {
-            return this.players.get(this.king).getRank() != null || this.rankIndex > 0;
+            return getPlayerByIndex(this.king).getRank() != null || this.rankIndex > 0;
         }
         if (this.isKingOverFour) {
-            return this.players.get(this.king).getRank() != null || this.rankIndex > 1;
+            return getPlayerByIndex(this.king).getRank() != null || this.rankIndex > 1;
         }
-        return false;
+        if (getPlayerByIndex(this.king).getRank() != null && getPlayerByIndex(this.agent).getRank() != null) {
+            return true;
+        }
+        return getNormalPlayers().stream().allMatch(p -> p.getRank() != null);
     }
 
     public void updatePlayerInfo() {
@@ -165,6 +188,7 @@ public class Game extends BaseEntity {
     }
 
     public void buildRank() {
+        Player playerKing = getPlayerByIndex(this.king);
         if (this.isKingOverFour) {
             int base = 3;
             if (this.hasRevolution) {
@@ -172,22 +196,22 @@ public class Game extends BaseEntity {
             }
             if (this.isKingOverFourPublic) {
                 base *= 2;
-                if (this.players.get(this.king).getRank() == 0) {
+                if (playerKing.getRank() == 0) {
                     setPlayerScores(-1 * base, true);
                 } else {
                     setPlayerScores(base, true);
                 }
             } else {
-                if (this.players.get(this.king).getRank() == 0) {
+                if (playerKing.getRank() == 0) {
                     setPlayerScores(-1 * base, true);
-                } else if (this.players.get(this.king).getRank() == 1) {
+                } else if (playerKing.getRank() == 1) {
                     setPlayerScores(0, true);
                 } else {
                     setPlayerScores(base, true);
                 }
             }
         } else {
-            int base = this.players.get(this.king).getRank() + this.players.get(this.agent).getRank() - 4;
+            int base = playerKing.getRank() + getPlayerByIndex(this.agent).getRank() - 4;
             if (this.hasRevolution) {
                 base *= 2;
             }

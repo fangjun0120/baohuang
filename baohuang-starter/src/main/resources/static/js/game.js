@@ -23,8 +23,8 @@ class Game {
                     this.players.set(player.index, new Player(player))
                 } else {
                     this.players.get(player.index).sync(player)
-                    updateSet.add(player.index)
                 }
+                updateSet.add(player.index)
             }
             // 不在说明退出了
             for (const pi of this.players.keys()) {
@@ -34,17 +34,25 @@ class Game {
                 }
             }
         }
+        let currentPlayerState = thisPlayer.state
+        if (currentPlayerState === 0 || currentPlayerState === 1) {
+            drawButton("Cancel", "Ready")
+        } else if (currentPlayerState === 3) {
+            drawButton("Cancel", "Submit")
+        } else {
+            clearButton()
+        }
         if (message.playerOptions) {
 
         }
     }
 
     set isOneOverFour(value) {
-        console.log("oneOverFour")
+
     }
 
     set isRevolution(value) {
-        console.log("revolution")
+
     }
 }
 
@@ -70,14 +78,9 @@ class Player {
             drawCards(getDeckRegion(), this.cardList, selected, "mid");
         }
         if (this.lastHand) {
-            drawCards(getCardRegionByIndex(playerInfo.index), this.cardList, selected, "mid");
-        }
-        if (this.state === 0 || this.state === 1) {
-            drawButton("Cancel", "Ready")
-        } else if (this.state === 3) {
-            drawButton("Cancel", "Submit")
+            drawCards(getCardRegionByIndex(playerInfo.index), this.lastHand, selected, "mid");
         } else {
-            clearButton()
+            clearRegion(getCardRegionByIndex(playerInfo.index))
         }
     }
 

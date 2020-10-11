@@ -5,6 +5,7 @@ import jfang.games.baohuang.common.message.PlayerOptionEnum;
 import jfang.games.baohuang.common.message.PlayerOptions;
 import jfang.games.baohuang.common.message.PlayerRank;
 import jfang.games.baohuang.domain.constant.GameStageEnum;
+import jfang.games.baohuang.domain.constant.GuideMessage;
 import jfang.games.baohuang.domain.entity.Game;
 import jfang.games.baohuang.domain.entity.Player;
 import jfang.games.baohuang.domain.repo.RepoUtil;
@@ -19,6 +20,7 @@ public class EndStage implements GameStage {
 
     @Override
     public void run(Game game) {
+        RepoUtil.messageRepo.broadcastRoom(game.getRoomId(), GuideMessage.ENDING);
         // 检查下最终状态
         for (Player player: game.getPlayers()) {
             if (player.getRank() == null) {
