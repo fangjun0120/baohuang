@@ -126,7 +126,8 @@ public class BuySevenStage implements GameStage {
         }
     }
 
-    private void nextStage(Game game) {
+    @Override
+    public void nextStage(Game game) {
         game.setGameStage(new SelectStage());
         game.getGameStage().run(game);
     }

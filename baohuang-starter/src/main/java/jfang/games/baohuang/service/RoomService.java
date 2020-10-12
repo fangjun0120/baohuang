@@ -2,9 +2,11 @@ package jfang.games.baohuang.service;
 
 import jfang.games.baohuang.adapter.UserDetailAdapter;
 import jfang.games.baohuang.common.message.MessageDTO;
+import jfang.games.baohuang.domain.constant.GuideMessage;
 import jfang.games.baohuang.domain.constant.PlayerStatus;
 import jfang.games.baohuang.domain.entity.Player;
 import jfang.games.baohuang.domain.entity.Room;
+import jfang.games.baohuang.domain.repo.MessageRepo;
 import jfang.games.baohuang.domain.repo.RoomRepo;
 import jfang.games.baohuang.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,8 @@ public class RoomService {
 
     @Resource
     private RoomRepo roomCache;
+    @Resource
+    private MessageRepo messageRepo;
 
     /**
      * 用户进入房间
@@ -70,15 +74,31 @@ public class RoomService {
         Room room = roomCache.getRoomById(id);
         if (!message.getGameId().equals(room.getGame().getId())) {
             log.warn("game not match {} from source {}", message.getGameId(), message.getSource());
+            // 有可能是上一局游戏的结束，刷新下这个玩家
+            if (message.getPlayerCallback() != null && message.getPlayerCallback().getUserId() != null) {
+                Long userId = message.getPlayerCallback().getUserId();
+                room.getGame().updatePlayerInfo(room.getGame().getPlayerByUserId(userId).getIndex(), null);
+            }
             return;
         }
+        // 重置游戏
         if (room.getGame().isCompleted()) {
             for (Player player: room.getPlayerList()) {
                 player.setStatus(PlayerStatus.INIT);
-                room.resetGame();
             }
+            room.resetGame();
             room.getGame().updatePlayerInfo();
         }
-        room.getGame().getGameStage().onPlayerMessage(room.getGame(), message);
+        try {
+            room.getGame().getGameStage().onPlayerMessage(room.getGame(), message);
+        } catch (Exception e) {
+            log.error("Error on message", e);
+            if (message.getPlayerCallback() != null) {
+                Player player = room.getGame().getPlayerByUserId(message.getPlayerCallback().getUserId());
+                if (player != null) {
+                    messageRepo.sendMessage(player.getDisplayName(), String.format(GuideMessage.ERROR, e.getMessage()));
+                }
+            }
+        }
     }
 }

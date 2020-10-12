@@ -63,9 +63,11 @@ class Player {
         this.username = playerInfo.username
         this.portrait = playerInfo.portrait
         this.index = playerInfo.index
-        drawPortrait(getPortraitByIndex(playerInfo.index), playerInfo.portrait, playerInfo.username, false)
+        this.state = playerInfo.state
+        drawPortrait(getPortraitByIndex(playerInfo.index), playerInfo.portrait, playerInfo.username, this.state === 0 || this.state === 3)
     }
 
+    // 需要操作的时候画红框
     sync(playerInfo) {
         this.isKing = playerInfo.isKing
         this.hasRevolution = playerInfo.hasRevolution
@@ -73,7 +75,7 @@ class Player {
         this.cardList = playerInfo.cardList
         this.pass = playerInfo.pass
         this.lastHand = playerInfo.lastHand
-        drawPortrait(getPortraitByIndex(this.index), this.portrait, this.username, this.state === 3)
+        drawPortrait(getPortraitByIndex(this.index), this.portrait, this.username, this.state === 0 || this.state === 3)
         if (this.cardList) {
             drawCards(getDeckRegion(), this.cardList, selected, "mid");
         }

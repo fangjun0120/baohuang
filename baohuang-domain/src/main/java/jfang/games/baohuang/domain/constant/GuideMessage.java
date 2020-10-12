@@ -30,5 +30,7 @@ public class GuideMessage {
     public static final String RUNNING_REVOLUTION = "起义";
     public static final String RUNNING_ONE_OVER_FOUR = "名牌一打四";
     public static final String RUNNING_OVER = "[系统] 玩家 %s 已完成，名次是 %s";
+    public static final String RUNNING_DEAD = "[系统] 玩家 %s 被闷了";
     public static final String ENDING = "[系统] 游戏结束";
+    public static final String ERROR = "[系统] 异常 %s";
 }

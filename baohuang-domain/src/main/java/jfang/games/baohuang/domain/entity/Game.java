@@ -120,6 +120,15 @@ public class Game extends BaseEntity {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * @return 所有还在的玩家
+     */
+    public List<Player> getActivePlayers() {
+        return this.getPlayers().stream()
+                .filter(p -> p.getStatus() != PlayerStatus.COMPLETED && p.getStatus() != PlayerStatus.DEAD)
+                .collect(Collectors.toList());
+    }
+
     public int nextPlayer() {
         int index = this.currentPlayer + 1;
         while (index != this.currentPlayer) {
@@ -151,6 +160,15 @@ public class Game extends BaseEntity {
                 player.getPlayerAction().setLastHand(null);
             }
         }
+    }
+
+    /**
+     * @return 完成的人发的7,是否没人接
+     */
+    public boolean checkNoFollowers() {
+        List<Player> activePlayers = getActivePlayers();
+        return activePlayers.stream()
+                .allMatch(p -> p.getPlayerAction() != null && Boolean.TRUE.equals(p.getPlayerAction().getPass()));
     }
 
     public boolean checkCompleted() {

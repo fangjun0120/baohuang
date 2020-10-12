@@ -33,8 +33,7 @@ public class InitStage implements GameStage {
             player.setStatus(PlayerStatus.READY);
             if (game.getPlayers().size() == 5 &&
                     game.getPlayers().stream().noneMatch(p -> p.getStatus() != PlayerStatus.READY)) {
-                game.setGameStage(new ShuffleStage());
-                game.getGameStage().run(game);
+                nextStage(game);
             }
         } else {
             player.setStatus(PlayerStatus.INIT);
@@ -47,6 +46,12 @@ public class InitStage implements GameStage {
             RepoUtil.messageRepo.broadcastRoom(game.getRoomId(), String.format(GuideMessage.PLAYER_READY, names));
         }
         game.updatePlayerInfo();
+    }
+
+    @Override
+    public void nextStage(Game game) {
+        game.setGameStage(new ShuffleStage());
+        game.getGameStage().run(game);
     }
 
     @Override

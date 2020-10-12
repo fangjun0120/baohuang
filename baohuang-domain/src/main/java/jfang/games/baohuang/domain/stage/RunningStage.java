@@ -40,14 +40,13 @@ public class RunningStage implements GameStage {
         // 是否过牌
         if (Boolean.TRUE.equals(messageDTO.getPlayerCallback().getPass())) {
             if (game.getCurrentLeader() == null) {
-                throw new IllegalArgumentException("should input cards");
+                throw new IllegalArgumentException("你先出，请出牌");
             }
             player.getPlayerAction().setPass(true);
             player.setStatus(PlayerStatus.WAITING);
             int nextPlayer = game.nextPlayer();
-            // TODO: 借东风的情况
-            // 是否一圈没人要
-            if (game.getCurrentLeader() == nextPlayer) {
+            // 是否一圈没人要，或者没人要已经走了的人的7
+            if (game.getCurrentLeader() == nextPlayer || game.checkNoFollowers()) {
                 game.setCurrentLeader(null);
                 game.clearLastRound();
             }
@@ -61,12 +60,14 @@ public class RunningStage implements GameStage {
                 Player currentLeader = game.getPlayerByIndex(game.getCurrentLeader());
                 Hand lastHand = currentLeader.getPlayerAction().getLastHand();
                 if (!hand.isDominateThan(lastHand)) {
-                    throw new IllegalArgumentException();
+                    throw new IllegalArgumentException("牌型不够大");
                 } else if (currentLeader.isDead()) {
                     // 上一个玩家是否被闷了
                     currentLeader.setStatus(PlayerStatus.DEAD);
                     currentLeader.setRank(game.getReverseRankIndex());
                     game.addCompletedPlayer(currentLeader.getIndex(), true);
+                    RepoUtil.messageRepo.broadcastRoom(game.getRoomId(),
+                            String.format(GuideMessage.RUNNING_DEAD, currentLeader.getDisplayName()));
                 }
             }
             player.getPlayerAction().setPass(false);
@@ -79,8 +80,7 @@ public class RunningStage implements GameStage {
                         String.format(GuideMessage.RUNNING_OVER, player.getDisplayName(), player.getRank() + 1));
                 if (game.checkCompleted()) {
                     game.updatePlayerInfo();
-                    game.setGameStage(new EndStage());
-                    game.getGameStage().run(game);
+                    nextStage(game);
                 }
             } else {
                 player.setStatus(PlayerStatus.WAITING);
@@ -91,6 +91,12 @@ public class RunningStage implements GameStage {
             game.setCurrentPlayer(nextPlayer);
         }
         game.updatePlayerInfo();
+    }
+
+    @Override
+    public void nextStage(Game game) {
+        game.setGameStage(new EndStage());
+        game.getGameStage().run(game);
     }
 
     @Override

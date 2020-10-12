@@ -20,7 +20,10 @@ function onSystemMessage(message) {
                 size: "small",
                 title: message.playerOptions.message,
                 message: message.playerOptions.data,
-                callback: function() {}
+                callback: function() {
+                    let feedback = { "userId": userId }
+                    submit(feedback, null)
+                }
             })
         } else {
             bootbox.confirm(message.playerOptions.message, function (result) {

@@ -30,12 +30,17 @@ public class ShuffleStage implements GameStage {
             goodToGo = dealCards(game);
         }
         game.updatePlayerInfo();
-        game.setGameStage(new BuySevenStage());
-        game.getGameStage().run(game);
+        nextStage(game);
     }
 
     @Override
     public void onPlayerMessage(Game game, MessageDTO messageDTO) {
+    }
+
+    @Override
+    public void nextStage(Game game) {
+        game.setGameStage(new BuySevenStage());
+        game.getGameStage().run(game);
     }
 
     @Override

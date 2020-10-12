@@ -10,4 +10,8 @@ public class PlayerRank {
 
     private String username;
     private Integer score;
+
+    public String toDisplayString() {
+        return username + " " + score;
+    }
 }

@@ -71,7 +71,8 @@ public class RevolutionStage implements GameStage {
         }
     }
 
-    private void nextStage(Game game) {
+    @Override
+    public void nextStage(Game game) {
         game.setGameStage(new RunningStage());
         game.getGameStage().run(game);
     }

@@ -125,18 +125,19 @@ public class Hand {
         List<Integer> thisValueList = this.toValueList(this.isJoker2Over1(base));
         List<Integer> baseValueList = base.toValueList(base.isJoker2Over1(this));
 
-        Preconditions.checkArgument(thisValueList.size() == baseValueList.size(), "dimension invalid");
+        Preconditions.checkArgument(thisValueList.size() == baseValueList.size(),
+                String.format("张数不匹配(%s, %s)", thisValueList.size(), baseValueList.size()));
         Boolean dominate = null;
         for (int i = 0; i < thisValueList.size(); i++) {
             if (thisValueList.get(i).equals(baseValueList.get(i))) {
-                throw new IllegalArgumentException("value must not be equal");
+                throw new IllegalArgumentException(String.format("大小不能相等(%s)", i));
             }
             if (dominate == null) {
                 dominate = thisValueList.get(i) > baseValueList.get(i);
             } else if (dominate && thisValueList.get(i) < baseValueList.get(i)) {
-                throw new IllegalArgumentException("value invalid");
+                throw new IllegalArgumentException(String.format("要大都要大(%s)", i));
             } else if (!dominate && thisValueList.get(i) > baseValueList.get(i)) {
-                throw new IllegalArgumentException("value invalid");
+                throw new IllegalArgumentException(String.format("要小都要小(%s)", i));
             }
         }
         return dominate;

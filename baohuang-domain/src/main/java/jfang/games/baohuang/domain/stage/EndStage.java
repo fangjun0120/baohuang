@@ -29,20 +29,27 @@ public class EndStage implements GameStage {
         }
         game.buildRank();
         RepoUtil.gameRepo.saveGame(game);
-        List<PlayerRank> rankList = game.getPlayers().stream().map(p -> {
+        StringBuilder sb = new StringBuilder("结分：\n");
+        game.getPlayers().forEach(p -> {
             PlayerRank playerRank = new PlayerRank();
             playerRank.setUsername(p.getDisplayName());
             playerRank.setScore(p.getScore());
-            return playerRank;
-        }).collect(Collectors.toList());
+            sb.append(playerRank.toDisplayString());
+            sb.append("\n");
+        });
         for (Player player: game.getPlayers()) {
-            game.updatePlayerInfo(player.getIndex(), PlayerOptions.of(PlayerOptionEnum.ENDING, rankList));
+            game.updatePlayerInfo(player.getIndex(), PlayerOptions.of(PlayerOptionEnum.ENDING, sb.toString()));
         }
         game.setCompleted(true);
     }
 
     @Override
     public void onPlayerMessage(Game game, MessageDTO messageDTO) {
+    }
+
+    @Override
+    public void nextStage(Game game) {
+
     }
 
     @Override

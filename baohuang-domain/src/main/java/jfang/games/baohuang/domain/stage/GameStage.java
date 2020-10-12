@@ -18,9 +18,13 @@ public interface GameStage {
      * 接收消息
      * @param game 上下文
      * @param messageDTO 消息
-     * @return 对当前游戏的控制
      */
     void onPlayerMessage(Game game, MessageDTO messageDTO);
+
+    /*×
+     * 执行下一阶段
+     */
+    void nextStage(Game game);
 
     /**
      * 当前阶段序列号
