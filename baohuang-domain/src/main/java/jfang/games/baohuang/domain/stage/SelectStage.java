@@ -98,7 +98,8 @@ public class SelectStage implements GameStage {
         }
     }
 
-    private void nextStage(Game game) {
+    @Override
+    public void nextStage(Game game) {
         game.updatePlayerInfo();
         game.setGameStage(new RevolutionStage());
         game.getGameStage().run(game);
