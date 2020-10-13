@@ -25,6 +25,9 @@ function onSystemMessage(message) {
                     submit(feedback, null)
                 }
             })
+            if (message.playerOptions.value === 2) {
+                addRankRow()
+            }
         } else {
             bootbox.confirm(message.playerOptions.message, function (result) {
                 let option = { "value": message.playerOptions.value, "response": result }
@@ -136,4 +139,30 @@ function submit(feedback, option) {
         message.playerOptionResponse = option
     }
     wsSendSystemMessage(message)
+}
+
+function onPlayerAdded(index, name) {
+    $('#head-' + index).text(name)
+    clearTable()
+}
+
+function onPlayerLeft(index) {
+    $('#head-' + index).text("" + index)
+    clearTable()
+}
+
+function addRankRow() {
+    let index = $('#rank-area tbody tr').length + 1
+    $('#rank-area tbody tr').last().after(
+        ['<tr><td>', index, '</td><td>',
+            game.players[0].score, '</td><td>',
+            game.players[1].score, '</td><td>',
+            game.players[2].score, '</td><td>',
+            game.players[3].score, '</td><td>',
+            game.players[4].score, '</td></tr>'].join()
+    )
+}
+
+function clearTable() {
+    $('#rank-area tbody').empty()
 }

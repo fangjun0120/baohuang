@@ -21,4 +21,5 @@ public class PlayerInfo {
     private List<CardInfo> cardList;
     private Boolean pass;
     private List<CardInfo> lastHand;
+    private Integer score;
 }

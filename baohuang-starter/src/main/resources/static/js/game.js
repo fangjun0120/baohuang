@@ -21,6 +21,7 @@ class Game {
             for (const player of message.playerInfo) {
                 if (!this.players.has(player.index)) {
                     this.players.set(player.index, new Player(player))
+                    onPlayerAdded(player.index, player.username)
                 } else {
                     this.players.get(player.index).sync(player)
                 }
@@ -31,6 +32,7 @@ class Game {
                 if (!updateSet.has(pi)) {
                     this.players.get(pi).clear()
                     this.players.delete(pi)
+                    onPlayerLeft(pi)
                 }
             }
         }
@@ -75,7 +77,11 @@ class Player {
         this.cardList = playerInfo.cardList
         this.pass = playerInfo.pass
         this.lastHand = playerInfo.lastHand
-        drawPortrait(getPortraitByIndex(this.index), this.portrait, this.username, this.state === 0 || this.state === 3)
+        let name = this.username
+        if (this.isKing) {
+            name = '[主公] ' + name
+        }
+        drawPortrait(getPortraitByIndex(this.index), this.portrait, name, this.state === 0 || this.state === 3)
         if (this.cardList) {
             drawCards(getDeckRegion(), this.cardList, selected, "mid");
         }

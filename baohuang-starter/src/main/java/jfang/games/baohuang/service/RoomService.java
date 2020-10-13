@@ -84,7 +84,7 @@ public class RoomService {
         // 重置游戏
         if (room.getGame().isCompleted()) {
             for (Player player: room.getPlayerList()) {
-                player.setStatus(PlayerStatus.INIT);
+                player.reset();
             }
             room.resetGame();
             room.getGame().updatePlayerInfo();

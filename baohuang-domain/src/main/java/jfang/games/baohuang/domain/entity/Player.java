@@ -52,6 +52,7 @@ public class Player {
         playerInfo.setState(this.status.getValue());
         playerInfo.setIsKing(this.isKing);
         playerInfo.setHasRevolution(this.hasRevolution);
+        playerInfo.setScore(this.score);
         if (includeCard && this.playerCards != null) {
             playerInfo.setCardList(this.playerCards.toCardInfo());
         }

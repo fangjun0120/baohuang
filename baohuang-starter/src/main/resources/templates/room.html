@@ -15,38 +15,30 @@
             <canvas id="my-canvas"></canvas>
         </div>
         <div id="status" class="row">
-            <div id="rank" class="col-9">
-                <table class="table">
+            <div id="rank" class="col-7">
+                <label for="rank-area">积分:</label>
+                <table id="rank-area" class="table">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">A</th>
-                            <th scope="col">B</th>
-                            <th scope="col">C</th>
-                            <th scope="col">D</th>
-                            <th scope="col">E</th>
+                            <th id="head-0" scope="col">0</th>
+                            <th id="head-1" scope="col">1</th>
+                            <th id="head-2" scope="col">2</th>
+                            <th id="head-3" scope="col">3</th>
+                            <th id="head-4" scope="col">4</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>-1</td>
-                            <td>-1</td>
-                            <td>-1</td>
-                        </tr>
-                    </tbody>
+                    <tbody></tbody>
                 </table>
             </div>
-            <div id="chat" class="col-3">
-                <label for="message-area">Messages:</label>
+            <div id="chat" class="col-5">
+                <label for="message-area">系统消息:</label>
                 <br/>
-                <textarea id="message-area" rows="10"></textarea>
+                <textarea id="message-area" rows="10" style="min-width: 100%"></textarea>
                 <br/>
-                <label for="to-message">Say</label><input type="text" id="to-message"/>
-                <button id="send-message" onclick="wsSendMessage();">Send</button>
-                <button id="left-room">Leave Room</button>
+                <label for="to-message"></label><input type="text" id="to-message"/>
+                <button id="send-message" onclick="wsSendMessage();">发送</button>
+                <button id="left-room">离开</button>
             </div>
         </div>
     </div>
@@ -94,39 +86,6 @@
                 onClick(event);
             }, false);
             wsConnect();
-
-            // test
-            // for (let i = 0; i < 29; i++) {
-            //     let card = {
-            //         suit: "hearts",
-            //         rank: "6"
-            //     }
-            //     cardList.push(card);
-            // }
-            // let subList = []
-            // for (let i = 0; i < 5; i++) {
-            //     let card = {
-            //         suit: "hearts",
-            //         rank: "7"
-            //     }
-            //     subList.push(card);
-            // }
-            // drawCards(getDeckRegion(), cardList, selected, "mid");
-            // drawPortrait(getMainPortraitRegion(), "../static/images/portrait0.jpg", "大哥的大");
-            // drawCards(getMainCardRegion(), subList, null, "mid")
-            // drawPortrait(getTopLeftPortraitRegion(), "../static/images/portrait0.jpg", "大哥的大");
-            // drawCardBack(getTopLeftDeckRegion());
-            // drawCards(getTopLeftCardRegion(), subList, null, "left")
-            // drawPortrait(getTopRightPortraitRegion(), "../static/images/portrait0.jpg", "大哥的大");
-            // drawCardBack(getTopRightDeckRegion());
-            // drawCards(getTopRightCardRegion(), subList, null, "right")
-            // drawPortrait(getButtonLeftPortraitRegion(), "../static/images/portrait0.jpg", "大哥的大");
-            // drawCardBack(getButtonLeftDeckRegion());
-            // drawCards(getButtonLeftCardRegion(), subList, null, "left")
-            // drawPortrait(getButtonRightPortraitRegion(), "../static/images/portrait0.jpg", "大哥的大");
-            // drawCardBack(getButtonRightDeckRegion());
-            // drawCards(getButtonRightCardRegion(), subList, null, "right")
-            // drawButton()
         }
         $(document).ready(function() {
             $("#left-room").click(function(event) {
