@@ -4,6 +4,7 @@ import jfang.games.baohuang.common.message.MessageDTO;
 import jfang.games.baohuang.domain.constant.GameStageEnum;
 import jfang.games.baohuang.domain.constant.GuideMessage;
 import jfang.games.baohuang.domain.constant.PlayerStatus;
+import jfang.games.baohuang.domain.constant.Rank;
 import jfang.games.baohuang.domain.entity.Game;
 import jfang.games.baohuang.domain.entity.Hand;
 import jfang.games.baohuang.domain.entity.Player;
@@ -68,6 +69,12 @@ public class RunningStage implements GameStage {
                     game.addCompletedPlayer(currentLeader.getIndex(), true);
                     RepoUtil.messageRepo.broadcastRoom(game.getRoomId(),
                             String.format(GuideMessage.RUNNING_DEAD, currentLeader.getDisplayName()));
+                }
+            } else {
+                if (hand.getCards().size() == 1 && hand.getRank() == Rank.SEVEN.getValue()) {
+                    if (player.getPlayerCards().count() > 1) {
+                        throw new IllegalArgumentException("7必须最后出");
+                    }
                 }
             }
             player.getPlayerAction().setPass(false);

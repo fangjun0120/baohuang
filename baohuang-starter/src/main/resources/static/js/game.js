@@ -11,6 +11,7 @@ class Game {
     }
 
     sync(message) {
+        this.id = message.id
         this.stage = message.stage
         this.agentCard = message.agentCard
         this.isOneOverFour = message.isOneOverFour
@@ -84,6 +85,8 @@ class Player {
         drawPortrait(getPortraitByIndex(this.index), this.portrait, name, this.state === 0 || this.state === 3)
         if (this.cardList) {
             drawCards(getDeckRegion(), this.cardList, selected, "mid");
+        } else if (thisPlayer.index === this.index) {
+            clearRegion(getDeckRegion())
         }
         if (this.lastHand) {
             drawCards(getCardRegionByIndex(playerInfo.index), this.lastHand, selected, "mid");

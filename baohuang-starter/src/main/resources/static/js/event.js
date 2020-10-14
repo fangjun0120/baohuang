@@ -12,6 +12,7 @@ function onSystemMessage(message) {
         let player = new Player(playerInfo)
         thisPlayer = player
         game.addPlayer(player)
+        onPlayerAdded(player.index, player.username)
     }
     game.sync(message)
     if (message.playerOptions) {
@@ -69,7 +70,7 @@ function isInRegion(x, y, region) {
 
 // 给定点位于第几张牌的区域
 function getIndex(x, y, region, cardList) {
-    if (y < region.y || y > region.y + region.height) {
+    if (y < region.y || y > region.y + region.height || !cardList) {
         return -1;
     }
     let relativeX = x - mainCardXOffset;
@@ -152,15 +153,20 @@ function onPlayerLeft(index) {
 }
 
 function addRankRow() {
-    let index = $('#rank-area tbody tr').length + 1
-    $('#rank-area tbody tr').last().after(
-        ['<tr><td>', index, '</td><td>',
-            game.players[0].score, '</td><td>',
-            game.players[1].score, '</td><td>',
-            game.players[2].score, '</td><td>',
-            game.players[3].score, '</td><td>',
-            game.players[4].score, '</td></tr>'].join()
-    )
+    let tr = $('#rank-area tbody tr')
+    let index = tr.length
+    let htmlStr = ['<tr><td>', index, '</td><td class="player1">',
+        game.players[0].score, '</td><td class="player2">',
+        game.players[1].score, '</td><td class="player3">',
+        game.players[2].score, '</td><td class="player4">',
+        game.players[3].score, '</td><td class="player5">',
+        game.players[4].score, '</td></tr>'].join("")
+    tr.last().after(htmlStr)
+    for (let i = 0; i < 5; i++) {
+        let field = $('#score-' + i)
+        let pre = parseInt(field.text())
+        field.text(pre + game.players[i].score)
+    }
 }
 
 function clearTable() {
