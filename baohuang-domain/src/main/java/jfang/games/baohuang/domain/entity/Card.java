@@ -77,7 +77,11 @@ public class Card {
         } else if (isBlackJoker()) {
             return "BJ";
         } else {
-            return suit.getDisplayString() + getRank().getSymbol();
+            String s = suit.getDisplayString() + getRank().getSymbol();
+            if (isAgentCard) {
+                s = "*" + s;
+            }
+            return s;
         }
     }
 

@@ -68,7 +68,7 @@ public class Hand {
     }
 
     public String toDisplayString() {
-        return cards.stream().map(Card::toDisplayString).collect(Collectors.joining(" "));
+        return cards.stream().map(Card::toDisplayString).collect(Collectors.joining(""));
     }
 
     @Override

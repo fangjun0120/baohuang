@@ -26,6 +26,7 @@ public class RunningStage implements GameStage {
         Player current = game.getPlayerByIndex(game.getCurrentPlayer());
         current.setStatus(PlayerStatus.PLAYING);
         game.updatePlayerInfo();
+        RepoUtil.gameRepo.saveInitHand(game);
     }
 
     @Override
@@ -96,6 +97,7 @@ public class RunningStage implements GameStage {
             int nextPlayer = game.nextPlayer();
             game.getPlayerByIndex(nextPlayer).setStatus(PlayerStatus.PLAYING);
             game.setCurrentPlayer(nextPlayer);
+            RepoUtil.gameRepo.saveHand(hand, player.getUserId(), game.getId());
         }
         game.updatePlayerInfo();
     }

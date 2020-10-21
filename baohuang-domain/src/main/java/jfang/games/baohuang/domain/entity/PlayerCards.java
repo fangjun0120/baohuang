@@ -3,6 +3,7 @@ package jfang.games.baohuang.domain.entity;
 import jfang.games.baohuang.common.message.CardInfo;
 import jfang.games.baohuang.domain.constant.Rank;
 import jfang.games.baohuang.common.exception.CardNotFoundException;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
  */
 public class PlayerCards {
 
+    @Getter
     private final List<Card> cardList;
 
     public PlayerCards(List<Card> cardList) {
